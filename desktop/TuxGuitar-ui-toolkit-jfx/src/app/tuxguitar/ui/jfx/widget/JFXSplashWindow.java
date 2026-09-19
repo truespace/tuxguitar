@@ -2,6 +2,7 @@ package app.tuxguitar.ui.jfx.widget;
 
 import app.tuxguitar.ui.jfx.JFXComponent;
 import app.tuxguitar.ui.jfx.resource.JFXImage;
+import app.tuxguitar.ui.jfx.util.JFXPlatformUtil;
 import app.tuxguitar.ui.resource.UIImage;
 import app.tuxguitar.ui.widget.UISplashWindow;
 
@@ -60,6 +61,10 @@ public class JFXSplashWindow extends JFXComponent<Stage> implements UISplashWind
 	}
 
 	public void open() {
+		// iOS: the nested event loop of waitUntilShow() never returns and blocks the UI thread
+		if( JFXPlatformUtil.isIOS() ) {
+			return;
+		}
 		ImageView imageView = new ImageView(((JFXImage)this.getSplashImage()).getHandle());
 
 		Pane pane = (Pane) this.getControl().getScene().getRoot();

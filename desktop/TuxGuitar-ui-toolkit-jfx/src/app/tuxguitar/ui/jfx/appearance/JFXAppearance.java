@@ -11,6 +11,7 @@ import app.tuxguitar.ui.resource.UIColorModel;
 public class JFXAppearance implements UIAppearance {
 
 	public static final String CSS_RESOURCE = "styles/styles.css";
+	public static final String CSS_RESOURCE_IOS = "styles/styles-ios.css";
 
 	private Map<UIColorAppearance, String> colorMap;
 

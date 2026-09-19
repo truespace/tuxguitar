@@ -1,0 +1,5 @@
+/* iOS: Noto Sans is not available and the default font has no fallback for non-latin scripts (e.g. Hangul) */
+.root,
+.menu .label {
+  -fx-font-family: "Apple SD Gothic Neo";
+}

@@ -5,6 +5,7 @@ import app.tuxguitar.ui.jfx.appearance.JFXAppearance;
 import app.tuxguitar.ui.jfx.event.JFXCloseListenerManager;
 import app.tuxguitar.ui.jfx.menu.JFXMenuBar;
 import app.tuxguitar.ui.jfx.resource.JFXImage;
+import app.tuxguitar.ui.jfx.util.JFXPlatformUtil;
 import app.tuxguitar.ui.jfx.util.JFXSyncProcess;
 import app.tuxguitar.ui.menu.UIMenuBar;
 import app.tuxguitar.ui.resource.UIImage;
@@ -18,11 +19,13 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -47,8 +50,11 @@ public class JFXWindow extends JFXPaneContainer<Pane> implements UIWindow {
 
 		this.packing = false;
 		this.stage = stage;
-		this.stage.setScene(new Scene(getControl()));
+		this.stage.setScene(createScene(getControl(), parent));
 		this.stage.getScene().getStylesheets().add(JFXAppearance.CSS_RESOURCE);
+		if( JFXPlatformUtil.isIOS() ) {
+			this.stage.getScene().getStylesheets().add(JFXAppearance.CSS_RESOURCE_IOS);
+		}
 		this.stage.setWidth(DEFAULT_WINDOW_WIDTH);
 		this.stage.setHeight(DEFAULT_WINDOW_HEIGHT);
 		this.margin = new UIInset();
@@ -73,6 +79,16 @@ public class JFXWindow extends JFXPaneContainer<Pane> implements UIWindow {
 		if( modal ) {
 			this.stage.initModality(Modality.APPLICATION_MODAL);
 		}
+	}
+
+	private static Scene createScene(Pane root, JFXContainer<? extends Pane> parent) {
+		// on iOS the main window is full screen but its scene is not resized with it:
+		// size it to the screen, otherwise it keeps the preferred height of its content
+		if( parent == null && JFXPlatformUtil.isIOS() ) {
+			Rectangle2D bounds = Screen.getPrimary().getBounds();
+			return new Scene(root, bounds.getWidth(), bounds.getHeight());
+		}
+		return new Scene(root);
 	}
 
 	public void addChild(JFXNode<? extends Node> uiControl) {

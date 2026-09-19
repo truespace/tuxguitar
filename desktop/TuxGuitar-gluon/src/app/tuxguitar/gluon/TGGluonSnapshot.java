@@ -37,6 +37,9 @@ public class TGGluonSnapshot {
 						log("heartbeat " + elapsed + "s");
 						Thread.sleep(Math.min(5, delaySeconds - elapsed) * 1000L);
 					}
+					// dump first: Platform.runLater below may never return when the FX thread is stuck
+					log("thread dump before snapshot:");
+					dumpThreads();
 					final CountDownLatch done = new CountDownLatch(1);
 					Platform.runLater(new Runnable() {
 						public void run() {
