@@ -11,6 +11,7 @@ import app.tuxguitar.ui.chooser.UIPrinterChooser;
 import app.tuxguitar.ui.jfx.chooser.AWTPrinterChooser;
 import app.tuxguitar.ui.jfx.chooser.JFXColorChooser;
 import app.tuxguitar.ui.jfx.chooser.JFXDirectoryChooser;
+import app.tuxguitar.ui.jfx.chooser.JFXDocumentFileChooser;
 import app.tuxguitar.ui.jfx.chooser.JFXFileChooser;
 import app.tuxguitar.ui.jfx.chooser.JFXFontChooser;
 import app.tuxguitar.ui.jfx.menu.JFXMenuBar;
@@ -49,6 +50,7 @@ import app.tuxguitar.ui.jfx.widget.JFXTextField;
 import app.tuxguitar.ui.jfx.widget.JFXToggleButton;
 import app.tuxguitar.ui.jfx.widget.JFXWindow;
 import app.tuxguitar.ui.jfx.widget.JFXWrapLabel;
+import app.tuxguitar.ui.jfx.util.JFXPlatformUtil;
 import app.tuxguitar.ui.menu.UIMenuBar;
 import app.tuxguitar.ui.menu.UIPopupMenu;
 import app.tuxguitar.ui.resource.UIColor;
@@ -273,10 +275,16 @@ public class JFXFactory implements UIFactory {
 	}
 
 	public UIFileChooser createOpenFileChooser(UIWindow parent) {
+		if( JFXPlatformUtil.isIOS() ) {
+			return new JFXDocumentFileChooser(this, (JFXWindow) parent, JFXFileChooser.STYLE_OPEN);
+		}
 		return new JFXFileChooser((JFXWindow) parent, JFXFileChooser.STYLE_OPEN);
 	}
 
 	public UIFileChooser createSaveFileChooser(UIWindow parent) {
+		if( JFXPlatformUtil.isIOS() ) {
+			return new JFXDocumentFileChooser(this, (JFXWindow) parent, JFXFileChooser.STYLE_SAVE);
+		}
 		return new JFXFileChooser((JFXWindow) parent, JFXFileChooser.STYLE_SAVE);
 	}
 
