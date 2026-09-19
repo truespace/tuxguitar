@@ -29,7 +29,13 @@ cd android/build-scripts/tuxguitar-android && ./gradlew assembleRelease
 
 ### GraalVM native image (Gluon, `feature/ipad-port` work in progress)
 
-`desktop/TuxGuitar-gluon` builds the JavaFX variant as a native executable with `gluonfx-maven-plugin` (groundwork for iOS). All plugins are on one classpath (no `share/plugins` class loader); modules needing AWT or `javax.sound` are excluded. Requires Gluon GraalVM (`~/.gluon/graalvm-java23-darwin-aarch64-gluon-23+25.1-dev`).
+`desktop/TuxGuitar-gluon` builds the JavaFX variant as a native executable with `gluonfx-maven-plugin`, for macOS (`host`) and iOS. All plugins are on one classpath (no `share/plugins` class loader); modules needing AWT or `javax.sound` are excluded.
+
+Two Gluon GraalVMs are used (set both `JAVA_HOME` and `GRAALVM_HOME`):
+- macOS host: `~/.gluon/graalvm-java23-darwin-aarch64-gluon-23+25.1-dev`
+- **iOS: `~/.gluon/graalvm-svm-java17-darwin-m1-gluon-22.1.0.1-Final`** — substrate 0.0.69 only ships iOS static JDK libs / CAP cache for this release (`18-ea+prep18-9`); with GraalVM 23 the link fails on renamed JDK natives. Gluon's `ios-sim` target is x86_64-only, so test on a device.
+
+Agent-generated configs must stay parsable by GraalVM 22.1: use `"name"` (not `"type"`) in reflect/jni configs and no `module:` prefixes in resource patterns.
 
 ```sh
 # 1. build + install modules (JavaFX must match Gluon's static SDK, jfx21 — see gluon.javafx.version)
@@ -39,6 +45,13 @@ cd build-scripts/tuxguitar-gluon && mvn clean install -DskipTests -Djavafx.versi
 cd ../../TuxGuitar-gluon && mvn package gluonfx:build
 # run from target/ so share/ is found (see TGGluonLauncher)
 # regenerate reflection/resource config after adding plugins: mvn gluonfx:runagent
+
+# iOS (GraalVM 22.1): signed .app/.ipa in target/gluonfx/arm64-ios, share/ bundled via src/ios/assets (generated)
+mvn -Dgluonfx.target=ios package gluonfx:build gluonfx:package
+xcrun devicectl device install app --device <id> target/gluonfx/arm64-ios/tuxguitar-gluon.app
+xcrun devicectl device process launch --device <id> --console com.daengi.tuxguitar
+# -Dgluon.ios.snapshot=20 → after 20s window log + BMP snapshots in the app's Library/gluon
+#   (fetch with: devicectl device copy from --domain-type appDataContainer --domain-identifier com.daengi.tuxguitar --source Library/gluon)
 ```
 
 Hand-written native-image config (not overwritten by the agent) lives in `src/main/resources/META-INF/native-image/app.tuxguitar/tuxguitar-gluon/`.

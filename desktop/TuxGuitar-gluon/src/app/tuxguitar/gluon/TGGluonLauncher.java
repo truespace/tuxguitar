@@ -2,7 +2,11 @@ package app.tuxguitar.gluon;
 
 import java.io.File;
 
+import org.graalvm.nativeimage.ImageInfo;
+import org.graalvm.nativeimage.ProcessProperties;
+
 import app.tuxguitar.app.TGMainSingleton;
+import javafx.application.Platform;
 
 /**
  * Entry point for the GraalVM native-image (Gluon) builds.
@@ -15,6 +19,7 @@ public class TGGluonLauncher {
 
 	private static final String TG_HOME_PATH = "tuxguitar.home.path";
 	private static final String TG_SHARE_PATH = "tuxguitar.share.path";
+	private static final String TG_SNAPSHOT = "tuxguitar.gluon.snapshot";
 
 	public static void main(String[] args) {
 		File homeDir = findHomeDir();
@@ -26,21 +31,54 @@ public class TGGluonLauncher {
 				System.setProperty(TG_SHARE_PATH, new File(homeDir, "share").getAbsolutePath());
 			}
 		}
+		System.err.println("[TGGluonLauncher] home=" + System.getProperty(TG_HOME_PATH) + " share=" + System.getProperty(TG_SHARE_PATH));
+
+		if (isIOS()) {
+			// iOS apps never quit by themselves: closing the splash (or any other) stage must not end the FX runtime
+			Platform.setImplicitExit(false);
+		}
+
+		String snapshotDelay = System.getProperty(TG_SNAPSHOT);
+		if (snapshotDelay != null && !snapshotDelay.isEmpty()) {
+			TGGluonSnapshot.schedule(Integer.parseInt(snapshotDelay));
+		}
 		TGMainSingleton.main(args);
 	}
 
+	/**
+	 * Folder containing share/: next to the executable (inside the .app bundle on iOS),
+	 * or the working directory when running on the JVM.
+	 */
 	private static File findHomeDir() {
-		String command = ProcessHandle.current().info().command().orElse(null);
-		if (command != null) {
-			File parent = new File(command).getAbsoluteFile().getParentFile();
-			if (parent != null && new File(parent, "share").isDirectory()) {
-				return parent;
-			}
+		File executableDir = getExecutableDir();
+		if (executableDir != null && new File(executableDir, "share").isDirectory()) {
+			return executableDir;
 		}
 		File workingDir = new File(System.getProperty("user.dir"));
 		if (new File(workingDir, "share").isDirectory()) {
 			return workingDir;
 		}
 		return null;
+	}
+
+	private static boolean isIOS() {
+		// set by the Gluon iOS launcher
+		return "ios".equals(System.getProperty("javafx.platform"));
+	}
+
+	private static File getExecutableDir() {
+		String executable = null;
+		try {
+			// _NSGetExecutablePath on darwin, also inside the iOS sandbox
+			if (ImageInfo.inImageRuntimeCode()) {
+				executable = ProcessProperties.getExecutableName();
+			}
+		} catch (Throwable throwable) {
+			// not running on GraalVM
+		}
+		if (executable == null) {
+			executable = ProcessHandle.current().info().command().orElse(null);
+		}
+		return (executable != null ? new File(executable).getAbsoluteFile().getParentFile() : null);
 	}
 }

@@ -21,7 +21,60 @@
 			mismatched Java classes and native libraries fail at runtime on JNI lookups.
 		-->
 		<gluon.javafx.version>21.0.3</gluon.javafx.version>
+		<!-- iOS bundle identifier: must be covered by an installed provisioning profile -->
+		<gluon.app.identifier>com.daengi.tuxguitar</gluon.app.identifier>
+		<!-- debug: delay in seconds before TGGluonSnapshot runs on iOS, empty = disabled -->
+		<gluon.ios.snapshot></gluon.ios.snapshot>
 	</properties>
+
+	<profiles>
+		<profile>
+			<!-- mvn -Dgluonfx.target=ios ...: bundle share/ into the .app (copied by substrate from src/ios/assets) -->
+			<id>ios</id>
+			<activation>
+				<property>
+					<name>gluonfx.target</name>
+					<value>ios</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.gluonhq</groupId>
+						<artifactId>gluonfx-maven-plugin</artifactId>
+						<configuration>
+							<runtimeArgs>
+								<!-- -Dgluon.ios.snapshot=20: window log + BMP snapshots in user.home after 20s (see TGGluonSnapshot) -->
+								<list>-Dtuxguitar.gluon.snapshot=${gluon.ios.snapshot}</list>
+							</runtimeArgs>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.7</version>
+						<executions>
+							<execution>
+								<id>copy-share-ios</id>
+								<phase>package</phase>
+								<configuration>
+									<target name="copy-share-ios">
+										<delete dir="${basedir}/src/ios/assets/share" />
+										<copy todir="${basedir}/src/ios/assets/share">
+											<fileset dir="${project.build.directory}/share" />
+										</copy>
+									</target>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 	<dependencyManagement>
 		<dependencies>
@@ -110,6 +163,8 @@
 				<configuration>
 					<target>${gluonfx.target}</target>
 					<mainClass>app.tuxguitar.gluon.TGGluonLauncher</mainClass>
+					<appIdentifier>${gluon.app.identifier}</appIdentifier>
+					<appLabel>TuxGuitar</appLabel>
 					<verbose>true</verbose>
 					<!-- the tracing agent only records what was used in a session: include all translations and settings -->
 					<resourcesList>
@@ -126,6 +181,14 @@
 	</build>
 
 	<dependencies>
+		<!-- ImageInfo / ProcessProperties, provided by GraalVM at build and run time -->
+		<dependency>
+			<groupId>org.graalvm.sdk</groupId>
+			<artifactId>nativeimage</artifactId>
+			<version>24.1.0</version>
+			<scope>provided</scope>
+		</dependency>
+
 		<!-- application core -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>

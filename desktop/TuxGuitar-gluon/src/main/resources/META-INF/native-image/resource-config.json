@@ -1,167 +1,149 @@
 {
-  "resources":{
-  "includes":[{
-    "pattern":"\\QMETA-INF\/fonts.mf\\E"
-  },{
-    "pattern":"\\QMETA-INF\/services\/app.tuxguitar.ui.UIApplicationFactory\\E"
-  },{
-    "pattern":"\\QMETA-INF\/services\/app.tuxguitar.util.plugin.TGPlugin\\E"
-  },{
-    "pattern":"\\QMETA-INF\/services\/java.lang.System$LoggerFinder\\E"
-  },{
-    "pattern":"\\QMETA-INF\/services\/java.time.zone.ZoneRulesProvider\\E"
-  },{
-    "pattern":"\\QMETA-INF\/services\/javax.xml.parsers.DocumentBuilderFactory\\E"
-  },{
-    "pattern":"\\QMETA-INF\/services\/jdk.vm.ci.services.JVMCIServiceLocator\\E"
-  },{
-    "pattern":"\\Qcom\/sun\/javafx\/scene\/control\/skin\/resources\/controls_ko_KR.properties\\E"
-  },{
-    "pattern":"\\Qcom\/sun\/javafx\/tk\/quantum\/QuantumMessagesBundle_ko_KR.properties\\E"
-  },{
-    "pattern":"\\Qlang\/messages.properties\\E"
-  },{
-    "pattern":"\\Qlang\/messages_ko.properties\\E"
-  },{
-    "pattern":"\\Qlang\/messages_ko_KR.properties\\E"
-  },{
-    "pattern":"\\Qplugins\\E"
-  },{
-    "pattern":"\\Qstyles\/styles.bss\\E"
-  },{
-    "pattern":"\\Qstyles\/styles.css\\E"
-  },{
-    "pattern":"\\Qtemplates\/template-default_ko_KR.tg\\E"
-  },{
-    "pattern":"\\Qtuxguitar-gtp.cfg\\E"
-  },{
-    "pattern":"\\Qtuxguitar-plugin-settings.cfg\\E"
-  },{
-    "pattern":"\\Qtuxguitar-shortcuts.xml\\E"
-  },{
-    "pattern":"\\Qtuxguitar.cfg\\E"
-  },{
-    "pattern":"java.base:\\Qjava\/lang\/Double.class\\E"
-  },{
-    "pattern":"java.base:\\Qjava\/lang\/Integer.class\\E"
-  },{
-    "pattern":"java.base:\\Qjava\/lang\/Long.class\\E"
-  },{
-    "pattern":"java.base:\\Qjava\/lang\/reflect\/Modifier.class\\E"
-  },{
-    "pattern":"java.base:\\Qjdk\/internal\/icu\/impl\/data\/icudt74b\/ubidi.icu\\E"
-  },{
-    "pattern":"java.xml:\\Qjdk\/xml\/internal\/jdkcatalog\/JDKCatalog.xml\\E"
-  },{
-    "pattern":"javafx.controls:\\Qcom\/sun\/javafx\/scene\/control\/skin\/modena\/modena.bss\\E"
-  },{
-    "pattern":"javafx.controls:\\Qcom\/sun\/javafx\/scene\/control\/skin\/resources\/controls.properties\\E"
-  },{
-    "pattern":"javafx.controls:\\Qcom\/sun\/javafx\/scene\/control\/skin\/resources\/controls_ko.properties\\E"
-  },{
-    "pattern":"javafx.controls:\\Qcom\/sun\/javafx\/scene\/control\/skin\/resources\/controls_ko_KR.properties\\E"
-  },{
-    "pattern":"javafx.graphics:\\Qcom\/sun\/glass\/utils\/NativeLibLoader.class\\E"
-  },{
-    "pattern":"javafx.graphics:\\Qcom\/sun\/javafx\/tk\/quantum\/QuantumMessagesBundle.properties\\E"
-  },{
-    "pattern":"javafx.graphics:\\Qcom\/sun\/javafx\/tk\/quantum\/QuantumMessagesBundle_ko.properties\\E"
-  },{
-    "pattern":"javafx.graphics:\\Qcom\/sun\/javafx\/tk\/quantum\/QuantumMessagesBundle_ko_KR.properties\\E"
-  },{
-    "pattern":"javafx.graphics:\\Qcom\/sun\/prism\/es2\/glsl\/DrawPgram_Color.frag\\E"
-  },{
-    "pattern":"javafx.graphics:\\Qcom\/sun\/prism\/es2\/glsl\/FillPgram_Color.frag\\E"
-  },{
-    "pattern":"javafx.graphics:\\Qcom\/sun\/prism\/es2\/glsl\/FillPgram_LinearGradient_PAD.frag\\E"
-  },{
-    "pattern":"javafx.graphics:\\Qcom\/sun\/prism\/es2\/glsl\/FillRoundRect_LinearGradient_PAD.frag\\E"
-  },{
-    "pattern":"javafx.graphics:\\Qcom\/sun\/prism\/es2\/glsl\/Mask_TextureSuper.frag\\E"
-  },{
-    "pattern":"javafx.graphics:\\Qcom\/sun\/prism\/es2\/glsl\/Solid_Color.frag\\E"
-  },{
-    "pattern":"javafx.graphics:\\Qcom\/sun\/prism\/es2\/glsl\/Solid_TextureRGB.frag\\E"
-  },{
-    "pattern":"javafx.graphics:\\Qcom\/sun\/prism\/es2\/glsl\/Texture_Color.frag\\E"
-  },{
-    "pattern":"javafx.graphics:\\Qcom\/sun\/prism\/es2\/glsl\/Texture_LinearGradient_PAD.frag\\E"
-  },{
-    "pattern":"javafx.graphics:\\Qcom\/sun\/scenario\/effect\/impl\/es2\/glsl\/LinearConvolveShadow_12.frag\\E"
-  },{
-    "pattern":"javafx.graphics:\\Qcom\/sun\/scenario\/effect\/impl\/es2\/glsl\/LinearConvolveShadow_4.frag\\E"
-  },{
-    "pattern":"javafx.graphics:\\Qlibglass.dylib\\E"
-  },{
-    "pattern":"javafx.graphics:\\Qlibjavafx_font.dylib\\E"
-  },{
-    "pattern":"javafx.graphics:\\Qlibprism_es2.dylib\\E"
-  },{
-    "pattern":"jdk.graal.compiler:\\Qjdk\/graal\/compiler\/hotspot\/replacements\/ClassGetHubNode.class\\E"
-  },{
-    "pattern":"jdk.graal.compiler:\\Qjdk\/graal\/compiler\/hotspot\/replacements\/HotSpotAllocationSnippets.class\\E"
-  },{
-    "pattern":"jdk.graal.compiler:\\Qjdk\/graal\/compiler\/hotspot\/replacements\/HotSpotHashCodeSnippets.class\\E"
-  },{
-    "pattern":"jdk.graal.compiler:\\Qjdk\/graal\/compiler\/hotspot\/replacements\/HotSpotIsArraySnippets.class\\E"
-  },{
-    "pattern":"jdk.graal.compiler:\\Qjdk\/graal\/compiler\/hotspot\/replacements\/HotSpotReplacementsUtil.class\\E"
-  },{
-    "pattern":"jdk.graal.compiler:\\Qjdk\/graal\/compiler\/hotspot\/replacements\/InstanceOfSnippets.class\\E"
-  },{
-    "pattern":"jdk.graal.compiler:\\Qjdk\/graal\/compiler\/hotspot\/replacements\/LoadExceptionObjectSnippets.class\\E"
-  },{
-    "pattern":"jdk.graal.compiler:\\Qjdk\/graal\/compiler\/hotspot\/replacements\/MonitorSnippets.class\\E"
-  },{
-    "pattern":"jdk.graal.compiler:\\Qjdk\/graal\/compiler\/hotspot\/replacements\/ObjectCloneSnippets.class\\E"
-  },{
-    "pattern":"jdk.graal.compiler:\\Qjdk\/graal\/compiler\/hotspot\/replacements\/TypeCheckSnippetUtils.class\\E"
-  },{
-    "pattern":"jdk.graal.compiler:\\Qjdk\/graal\/compiler\/hotspot\/replacements\/arraycopy\/HotSpotArraycopySnippets.class\\E"
-  },{
-    "pattern":"jdk.graal.compiler:\\Qjdk\/graal\/compiler\/hotspot\/stubs\/ExceptionHandlerStub.class\\E"
-  },{
-    "pattern":"jdk.graal.compiler:\\Qjdk\/graal\/compiler\/hotspot\/stubs\/ForeignCallSnippets.class\\E"
-  },{
-    "pattern":"jdk.graal.compiler:\\Qjdk\/graal\/compiler\/hotspot\/stubs\/IntrinsicStubsGen.class\\E"
-  },{
-    "pattern":"jdk.graal.compiler:\\Qjdk\/graal\/compiler\/nodes\/PiNode.class\\E"
-  },{
-    "pattern":"jdk.graal.compiler:\\Qjdk\/graal\/compiler\/nodes\/java\/DynamicNewArrayNode.class\\E"
-  },{
-    "pattern":"jdk.graal.compiler:\\Qjdk\/graal\/compiler\/nodes\/java\/DynamicNewInstanceNode.class\\E"
-  },{
-    "pattern":"jdk.graal.compiler:\\Qjdk\/graal\/compiler\/nodes\/java\/NewArrayNode.class\\E"
-  },{
-    "pattern":"jdk.graal.compiler:\\Qjdk\/graal\/compiler\/replacements\/AllocationSnippets.class\\E"
-  },{
-    "pattern":"jdk.graal.compiler:\\Qjdk\/graal\/compiler\/replacements\/BoxingSnippets.class\\E"
-  },{
-    "pattern":"jdk.graal.compiler:\\Qjdk\/graal\/compiler\/replacements\/IdentityHashCodeSnippets.class\\E"
-  },{
-    "pattern":"jdk.graal.compiler:\\Qjdk\/graal\/compiler\/replacements\/IsArraySnippets.class\\E"
-  },{
-    "pattern":"jdk.graal.compiler:\\Qjdk\/graal\/compiler\/replacements\/ReplacementsUtil.class\\E"
-  },{
-    "pattern":"jdk.graal.compiler:\\Qjdk\/graal\/compiler\/replacements\/SnippetCounter.class\\E"
-  },{
-    "pattern":"jdk.graal.compiler:\\Qjdk\/graal\/compiler\/replacements\/SnippetIntegerHistogram.class\\E"
-  },{
-    "pattern":"jdk.graal.compiler:\\Qjdk\/graal\/compiler\/replacements\/aarch64\/AArch64IntegerArithmeticSnippets.class\\E"
-  },{
-    "pattern":"jdk.graal.compiler:\\Qjdk\/graal\/compiler\/replacements\/arraycopy\/ArrayCopyCallNode.class\\E"
-  },{
-    "pattern":"jdk.graal.compiler:\\Qjdk\/graal\/compiler\/replacements\/arraycopy\/ArrayCopySnippets.class\\E"
-  },{
-    "pattern":"jdk.graal.compiler:\\Qjdk\/graal\/compiler\/replacements\/arraycopy\/ArrayCopyWithDelayedLoweringNode.class\\E"
-  },{
-    "pattern":"org.graalvm.word:\\Qorg\/graalvm\/word\/LocationIdentity.class\\E"
-  }]},
-  "bundles":[{
-    "name":"com.sun.javafx.tk.quantum.QuantumMessagesBundle",
-    "locales":["ko-KR"]
-  },{
-    "name":"com\/sun\/javafx\/scene\/control\/skin\/resources\/controls",
-    "locales":["ko-KR"]
-  }]
+  "resources": {
+    "includes": [
+      {
+        "pattern": "\\QMETA-INF/fonts.mf\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/app.tuxguitar.ui.UIApplicationFactory\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/app.tuxguitar.util.plugin.TGPlugin\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/java.lang.System$LoggerFinder\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/java.time.zone.ZoneRulesProvider\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/javax.xml.parsers.DocumentBuilderFactory\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/jdk.vm.ci.services.JVMCIServiceLocator\\E"
+      },
+      {
+        "pattern": "\\Qcom/sun/javafx/scene/control/skin/resources/controls_ko_KR.properties\\E"
+      },
+      {
+        "pattern": "\\Qcom/sun/javafx/tk/quantum/QuantumMessagesBundle_ko_KR.properties\\E"
+      },
+      {
+        "pattern": "\\Qlang/messages.properties\\E"
+      },
+      {
+        "pattern": "\\Qlang/messages_ko.properties\\E"
+      },
+      {
+        "pattern": "\\Qlang/messages_ko_KR.properties\\E"
+      },
+      {
+        "pattern": "\\Qplugins\\E"
+      },
+      {
+        "pattern": "\\Qstyles/styles.bss\\E"
+      },
+      {
+        "pattern": "\\Qstyles/styles.css\\E"
+      },
+      {
+        "pattern": "\\Qtemplates/template-default_ko_KR.tg\\E"
+      },
+      {
+        "pattern": "\\Qtuxguitar-gtp.cfg\\E"
+      },
+      {
+        "pattern": "\\Qtuxguitar-plugin-settings.cfg\\E"
+      },
+      {
+        "pattern": "\\Qtuxguitar-shortcuts.xml\\E"
+      },
+      {
+        "pattern": "\\Qtuxguitar.cfg\\E"
+      },
+      {
+        "pattern": "\\Qcom/sun/javafx/scene/control/skin/modena/modena.bss\\E"
+      },
+      {
+        "pattern": "\\Qcom/sun/javafx/scene/control/skin/resources/controls.properties\\E"
+      },
+      {
+        "pattern": "\\Qcom/sun/javafx/scene/control/skin/resources/controls_ko.properties\\E"
+      },
+      {
+        "pattern": "\\Qcom/sun/javafx/scene/control/skin/resources/controls_ko_KR.properties\\E"
+      },
+      {
+        "pattern": "\\Qcom/sun/glass/utils/NativeLibLoader.class\\E"
+      },
+      {
+        "pattern": "\\Qcom/sun/javafx/tk/quantum/QuantumMessagesBundle.properties\\E"
+      },
+      {
+        "pattern": "\\Qcom/sun/javafx/tk/quantum/QuantumMessagesBundle_ko.properties\\E"
+      },
+      {
+        "pattern": "\\Qcom/sun/javafx/tk/quantum/QuantumMessagesBundle_ko_KR.properties\\E"
+      },
+      {
+        "pattern": "\\Qcom/sun/prism/es2/glsl/DrawPgram_Color.frag\\E"
+      },
+      {
+        "pattern": "\\Qcom/sun/prism/es2/glsl/FillPgram_Color.frag\\E"
+      },
+      {
+        "pattern": "\\Qcom/sun/prism/es2/glsl/FillPgram_LinearGradient_PAD.frag\\E"
+      },
+      {
+        "pattern": "\\Qcom/sun/prism/es2/glsl/FillRoundRect_LinearGradient_PAD.frag\\E"
+      },
+      {
+        "pattern": "\\Qcom/sun/prism/es2/glsl/Mask_TextureSuper.frag\\E"
+      },
+      {
+        "pattern": "\\Qcom/sun/prism/es2/glsl/Solid_Color.frag\\E"
+      },
+      {
+        "pattern": "\\Qcom/sun/prism/es2/glsl/Solid_TextureRGB.frag\\E"
+      },
+      {
+        "pattern": "\\Qcom/sun/prism/es2/glsl/Texture_Color.frag\\E"
+      },
+      {
+        "pattern": "\\Qcom/sun/prism/es2/glsl/Texture_LinearGradient_PAD.frag\\E"
+      },
+      {
+        "pattern": "\\Qcom/sun/scenario/effect/impl/es2/glsl/LinearConvolveShadow_12.frag\\E"
+      },
+      {
+        "pattern": "\\Qcom/sun/scenario/effect/impl/es2/glsl/LinearConvolveShadow_4.frag\\E"
+      },
+      {
+        "pattern": "\\Qlibglass.dylib\\E"
+      },
+      {
+        "pattern": "\\Qlibjavafx_font.dylib\\E"
+      },
+      {
+        "pattern": "\\Qlibprism_es2.dylib\\E"
+      },
+      {
+        "pattern": "\\Qorg/graalvm/word/LocationIdentity.class\\E"
+      }
+    ]
+  },
+  "bundles": [
+    {
+      "name": "com.sun.javafx.tk.quantum.QuantumMessagesBundle",
+      "locales": [
+        "ko-KR"
+      ]
+    },
+    {
+      "name": "com/sun/javafx/scene/control/skin/resources/controls",
+      "locales": [
+        "ko-KR"
+      ]
+    }
+  ]
 }
