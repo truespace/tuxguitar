@@ -60,7 +60,7 @@ public class TGGluonSnapshot {
 		thread.start();
 	}
 
-	private static synchronized void log(String message) {
+	static synchronized void log(String message) {
 		String line = PREFIX + System.currentTimeMillis() + " " + message;
 		System.err.println(line);
 		try (PrintWriter writer = new PrintWriter(new FileWriter(new File(System.getProperty("user.home"), "tuxguitar-gluon.log"), true))) {

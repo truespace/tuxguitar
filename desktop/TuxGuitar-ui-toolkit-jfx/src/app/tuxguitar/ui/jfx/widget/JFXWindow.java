@@ -33,6 +33,7 @@ public class JFXWindow extends JFXPaneContainer<Pane> implements UIWindow {
 
 	private static final float DEFAULT_WINDOW_WIDTH = 640f;
 	private static final float DEFAULT_WINDOW_HEIGHT = 480f;
+	private static final float IOS_STATUS_BAR_HEIGHT = 24f;
 
 	private boolean packing;
 	private Stage stage;
@@ -44,6 +45,7 @@ public class JFXWindow extends JFXPaneContainer<Pane> implements UIWindow {
 	private JFXStageResizeListener stageResizeListener;
 	private JFXSyncProcess layoutProcess;
 	private boolean resizable;
+	private float topInset;
 
 	public JFXWindow(Stage stage, JFXContainer<? extends Pane> parent) {
 		super(new Pane(), parent);
@@ -51,6 +53,7 @@ public class JFXWindow extends JFXPaneContainer<Pane> implements UIWindow {
 		this.packing = false;
 		this.stage = stage;
 		this.stage.setScene(createScene(getControl(), parent));
+		this.topInset = computeTopInset(parent);
 		this.stage.getScene().getStylesheets().add(JFXAppearance.CSS_RESOURCE);
 		if( JFXPlatformUtil.isIOS() ) {
 			this.stage.getScene().getStylesheets().add(JFXAppearance.CSS_RESOURCE_IOS);
@@ -89,6 +92,16 @@ public class JFXWindow extends JFXPaneContainer<Pane> implements UIWindow {
 			return new Scene(root, bounds.getWidth(), bounds.getHeight());
 		}
 		return new Scene(root);
+	}
+
+	private static float computeTopInset(JFXContainer<? extends Pane> parent) {
+		// on iOS the full screen main window starts under the status bar, which takes the touches:
+		// keep the menu bar and the content below it
+		if( parent == null && JFXPlatformUtil.isIOS() ) {
+			float visualTop = (float) Screen.getPrimary().getVisualBounds().getMinY();
+			return (visualTop > 0 ? visualTop : IOS_STATUS_BAR_HEIGHT);
+		}
+		return 0f;
 	}
 
 	public void addChild(JFXNode<? extends Node> uiControl) {
@@ -136,6 +149,7 @@ public class JFXWindow extends JFXPaneContainer<Pane> implements UIWindow {
 		if( menuBar != null ) {
 			JFXMenuBar jfxMenuBar = ((JFXMenuBar) menuBar);
 			jfxMenuBar.getControl().prefWidthProperty().bind(this.getStage().getScene().widthProperty());
+			jfxMenuBar.getControl().setLayoutY(this.topInset);
 			jfxMenuBar.getControl().heightProperty().addListener(new JFXMenuResizeListener(this));
 
 			this.getControl().getChildren().add(jfxMenuBar.getControl());
@@ -153,6 +167,15 @@ public class JFXWindow extends JFXPaneContainer<Pane> implements UIWindow {
 
 	public void repack() {
 		this.packing = true;
+
+		// iOS: no window decorations, and dialogs report a 1x1 size so the margins would never
+		// be computed (endless runLater loop repacking the dialog): pack once
+		if( JFXPlatformUtil.isIOS() ) {
+			this.getStage().setResizable(this.resizable);
+			this.pack();
+			this.packing = false;
+			return;
+		}
 
 		final UIInset emptyMargins = new UIInset();
 
@@ -250,14 +273,18 @@ public class JFXWindow extends JFXPaneContainer<Pane> implements UIWindow {
 
 	public UIRectangle getChildArea() {
 		UIRectangle childArea = this.getChildArea(this.getSceneBounds().getSize());
+		childArea.getPosition().setY(this.topInset);
 		if( this.getMenuBar() != null && !this.getMenuBar().isDisposed()) {
-			childArea.getPosition().setY((float)((JFXMenuBar) this.menuBar).getControl().getHeight());
+			childArea.getPosition().setY(this.topInset + (float)((JFXMenuBar) this.menuBar).getControl().getHeight());
 		}
 		return childArea;
 	}
 
 	public Insets getPadding() {
 		Insets padding = super.getPadding();
+		if( this.topInset > 0 ) {
+			padding = new Insets((padding.getTop() + this.topInset), padding.getRight(), padding.getBottom(), padding.getLeft());
+		}
 		if( this.getMenuBar() != null && !this.getMenuBar().isDisposed()) {
 			MenuBar menuBar = ((JFXMenuBar) this.menuBar).getControl();
 

@@ -20,6 +20,7 @@ public class TGGluonLauncher {
 	private static final String TG_HOME_PATH = "tuxguitar.home.path";
 	private static final String TG_SHARE_PATH = "tuxguitar.share.path";
 	private static final String TG_SNAPSHOT = "tuxguitar.gluon.snapshot";
+	private static final String TG_EVENT_LOG = "tuxguitar.gluon.eventlog";
 
 	public static void main(String[] args) {
 		File homeDir = findHomeDir();
@@ -41,6 +42,9 @@ public class TGGluonLauncher {
 		String snapshotDelay = System.getProperty(TG_SNAPSHOT);
 		if (snapshotDelay != null && !snapshotDelay.isEmpty()) {
 			TGGluonSnapshot.schedule(Integer.parseInt(snapshotDelay));
+		}
+		if (Boolean.getBoolean(TG_EVENT_LOG)) {
+			TGGluonEventLog.install();
 		}
 		TGMainSingleton.main(args);
 	}
