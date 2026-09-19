@@ -27,6 +27,22 @@ mvn -e clean verify -P native-modules -P -platform-linux -P platform-windows
 cd android/build-scripts/tuxguitar-android && ./gradlew assembleRelease
 ```
 
+### GraalVM native image (Gluon, `feature/ipad-port` work in progress)
+
+`desktop/TuxGuitar-gluon` builds the JavaFX variant as a native executable with `gluonfx-maven-plugin` (groundwork for iOS). All plugins are on one classpath (no `share/plugins` class loader); modules needing AWT or `javax.sound` are excluded. Requires Gluon GraalVM (`~/.gluon/graalvm-java23-darwin-aarch64-gluon-23+25.1-dev`).
+
+```sh
+# 1. build + install modules (JavaFX must match Gluon's static SDK, jfx21 — see gluon.javafx.version)
+cd desktop && mvn -N install
+cd build-scripts/tuxguitar-gluon && mvn clean install -DskipTests -Djavafx.version=21.0.3
+# 2. native image (JAVA_HOME/GRAALVM_HOME = Gluon GraalVM); output target/gluonfx/aarch64-darwin/tuxguitar-gluon
+cd ../../TuxGuitar-gluon && mvn package gluonfx:build
+# run from target/ so share/ is found (see TGGluonLauncher)
+# regenerate reflection/resource config after adding plugins: mvn gluonfx:runagent
+```
+
+Hand-written native-image config (not overwritten by the agent) lives in `src/main/resources/META-INF/native-image/app.tuxguitar/tuxguitar-gluon/`.
+
 - `-P native-modules` adds the C/JNI modules in `desktop/build-scripts/native-modules/` (ALSA, JACK, FluidSynth, LV2, AudioUnit, WinMM…). CI builds without it.
 - Only SWT variants are released; JavaFX (`*-jfx*`) and Qt variants are not guaranteed to work.
 - The build output tree has `lib/` (classpath) and `share/` (resources). To run from an IDE, main class is `app.tuxguitar.app.TGMainSingleton` with `-Dtuxguitar.share.path=<target>/.../share/` and `-Dtuxguitar.home.path=<target>/.../` pointing at a previously built variant (see `docs/IDEs.md`).

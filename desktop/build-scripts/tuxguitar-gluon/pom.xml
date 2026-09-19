@@ -1,0 +1,44 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+		http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<artifactId>tuxguitar-pom</artifactId>
+		<groupId>app.tuxguitar</groupId>
+		<version>9.99-SNAPSHOT</version>
+		<relativePath>../../</relativePath>
+	</parent>
+
+	<!--
+		GraalVM native-image (Gluon) build, JavaFX UI toolkit.
+		Builds and installs the modules below; the native image itself is
+		produced from ../../TuxGuitar-gluon with the gluonfx-maven-plugin.
+	-->
+
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>tuxguitar-gluon-build</artifactId>
+	<packaging>pom</packaging>
+	<name>${project.artifactId}</name>
+
+	<modules>
+		<module>../../TuxGuitar</module>
+		<module>../../TuxGuitar-ui-toolkit</module>
+		<module>../../TuxGuitar-ui-toolkit-jfx</module>
+		<module>../../TuxGuitar-awt-graphics</module>
+		<module>../../../common/TuxGuitar-lib</module>
+		<module>../../../common/TuxGuitar-editor-utils</module>
+		<module>../../../common/TuxGuitar-gm-utils</module>
+		<module>../../../common/TuxGuitar-compat</module>
+		<module>../../../common/TuxGuitar-ascii</module>
+		<module>../../../common/TuxGuitar-gtp</module>
+		<module>../../TuxGuitar-gtp-ui</module>
+		<module>../../../common/TuxGuitar-gpx</module>
+		<module>../../../common/TuxGuitar-ptb</module>
+		<module>../../TuxGuitar-tef</module>
+		<module>../../TuxGuitar-musicxml</module>
+		<module>../../../common/TuxGuitar-midi</module>
+		<module>../../TuxGuitar-midi-ui</module>
+		<module>../../../common/TuxGuitar-lilypond</module>
+		<module>../../TuxGuitar-lilypond-ui</module>
+		<module>../../TuxGuitar-gluon</module>
+	</modules>
+</project>

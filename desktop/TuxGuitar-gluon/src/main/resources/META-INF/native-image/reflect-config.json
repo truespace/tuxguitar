@@ -1,0 +1,346 @@
+[
+{
+  "type":"app.tuxguitar.io.ascii.ASCIISongWriterPlugin",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.gpx.v6.GPXInputStreamPlugin",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.gpx.v7.GPXInputStreamPlugin",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.gtp.GP1InputStreamPlugin",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.gtp.GP2InputStreamPlugin",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.gtp.GP3InputStreamPlugin",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.gtp.GP3OutputStreamPlugin",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.gtp.GP4InputStreamPlugin",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.gtp.GP4OutputStreamPlugin",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.gtp.GP5InputStreamPlugin",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.gtp.GP5OutputStreamPlugin",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.gtp.ui.GTPSettingsPlugin",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.lilypond.LilypondSettingsHandlerPlugin",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.lilypond.LilypondSongWriterPlugin",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.midi.MidiSettingsHandlerPlugin",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.midi.MidiSongReaderPlugin",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.midi.MidiSongWriterPlugin",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.musicxml.MusicXMLSongWriterPlugin",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.ptb.PTInputStreamPlugin",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.tef2.TESongReaderPlugin",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.tef3.TESongReaderPlugin",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.tg.v07.TGSongReaderPluginImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.tg.v08.TGSongReaderPluginImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.tg.v09.TGSongReaderPluginImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.tg.v10.TGSongReaderPluginImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.tg.v10.TGSongWriterPluginImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.tg.v11.TGSongReaderPluginImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.tg.v11.TGSongWriterPluginImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.tg.v12.TGSongReaderPluginImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.tg.v12.TGSongWriterPluginImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.tg.v13.TGSongReaderPluginImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.tg.v13.TGSongWriterPluginImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.tg.v15.TGSongReaderPluginImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.io.tg.v15.TGSongWriterPluginImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.ui.jfx.JFXApplicationFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"app.tuxguitar.ui.jfx.JFXApplicationLauncher",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"com.sun.glass.ui.Application"
+},
+{
+  "type":"com.sun.glass.ui.Menu"
+},
+{
+  "type":"com.sun.glass.ui.MenuItem$Callback"
+},
+{
+  "type":"com.sun.glass.ui.Size"
+},
+{
+  "type":"com.sun.glass.ui.View"
+},
+{
+  "type":"com.sun.javafx.font.coretext.CTFactory",
+  "methods":[{"name":"getFactory","parameterTypes":[] }]
+},
+{
+  "type":"com.sun.javafx.logging.PrintLogger",
+  "methods":[{"name":"createInstance","parameterTypes":[] }]
+},
+{
+  "type":"com.sun.javafx.logging.jfr.JFRPulseLogger",
+  "methods":[{"name":"createInstance","parameterTypes":[] }]
+},
+{
+  "type":"com.sun.javafx.scene.control.skin.Utils",
+  "methods":[{"name":"getResource","parameterTypes":["java.lang.String"] }]
+},
+{
+  "type":"com.sun.javafx.tk.quantum.QuantumToolkit",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"com.sun.prism.GraphicsPipeline",
+  "methods":[{"name":"getFontFactory","parameterTypes":[] },{"name":"getPipeline","parameterTypes":[] }]
+},
+{
+  "type":"com.sun.prism.shader.DrawPgram_Color_Loader",
+  "methods":[{"name":"loadShader","parameterTypes":["com.sun.prism.ps.ShaderFactory","java.io.InputStream"] }]
+},
+{
+  "type":"com.sun.prism.shader.FillPgram_Color_Loader",
+  "methods":[{"name":"loadShader","parameterTypes":["com.sun.prism.ps.ShaderFactory","java.io.InputStream"] }]
+},
+{
+  "type":"com.sun.prism.shader.FillPgram_LinearGradient_PAD_Loader",
+  "methods":[{"name":"loadShader","parameterTypes":["com.sun.prism.ps.ShaderFactory","java.io.InputStream"] }]
+},
+{
+  "type":"com.sun.prism.shader.FillRoundRect_LinearGradient_PAD_Loader",
+  "methods":[{"name":"loadShader","parameterTypes":["com.sun.prism.ps.ShaderFactory","java.io.InputStream"] }]
+},
+{
+  "type":"com.sun.prism.shader.Mask_TextureSuper_Loader",
+  "methods":[{"name":"loadShader","parameterTypes":["com.sun.prism.ps.ShaderFactory","java.io.InputStream"] }]
+},
+{
+  "type":"com.sun.prism.shader.Solid_Color_Loader",
+  "methods":[{"name":"loadShader","parameterTypes":["com.sun.prism.ps.ShaderFactory","java.io.InputStream"] }]
+},
+{
+  "type":"com.sun.prism.shader.Solid_TextureRGB_Loader",
+  "methods":[{"name":"loadShader","parameterTypes":["com.sun.prism.ps.ShaderFactory","java.io.InputStream"] }]
+},
+{
+  "type":"com.sun.prism.shader.Texture_Color_Loader",
+  "methods":[{"name":"loadShader","parameterTypes":["com.sun.prism.ps.ShaderFactory","java.io.InputStream"] }]
+},
+{
+  "type":"com.sun.prism.shader.Texture_LinearGradient_PAD_Loader",
+  "methods":[{"name":"loadShader","parameterTypes":["com.sun.prism.ps.ShaderFactory","java.io.InputStream"] }]
+},
+{
+  "type":"com.sun.scenario.effect.impl.prism.PrRenderer",
+  "methods":[{"name":"createRenderer","parameterTypes":["com.sun.scenario.effect.FilterContext"] }]
+},
+{
+  "type":"com.sun.scenario.effect.impl.prism.ps.PPSLinearConvolveShadowPeer",
+  "methods":[{"name":"<init>","parameterTypes":["com.sun.scenario.effect.FilterContext","com.sun.scenario.effect.impl.Renderer","java.lang.String"] }]
+},
+{
+  "type":"com.sun.scenario.effect.impl.prism.ps.PPSRenderer",
+  "methods":[{"name":"createRenderer","parameterTypes":["com.sun.scenario.effect.FilterContext"] }]
+},
+{
+  "type":"java.lang.Character",
+  "methods":[{"name":"isIdeographic","parameterTypes":["int"] }]
+},
+{
+  "type":"java.lang.Runnable"
+},
+{
+  "type":"java.lang.String"
+},
+{
+  "type":"java.nio.ByteBuffer",
+  "methods":[{"name":"order","parameterTypes":["java.nio.ByteOrder"] }]
+},
+{
+  "type":"java.nio.ByteOrder",
+  "methods":[{"name":"nativeOrder","parameterTypes":[] }]
+},
+{
+  "type":"java.util.concurrent.atomic.AtomicReference",
+  "fields":[{"name":"value"}]
+},
+{
+  "type":"javafx.animation.Interpolator"
+},
+{
+  "type":"javafx.animation.KeyValue"
+},
+{
+  "type":"javafx.scene.Camera"
+},
+{
+  "type":"javafx.scene.Group"
+},
+{
+  "type":"javafx.scene.Node"
+},
+{
+  "type":"javafx.scene.ParallelCamera"
+},
+{
+  "type":"javafx.scene.Parent"
+},
+{
+  "type":"javafx.scene.Scene"
+},
+{
+  "type":"javafx.scene.canvas.Canvas"
+},
+{
+  "type":"javafx.scene.control.Control"
+},
+{
+  "type":"javafx.scene.control.Labeled"
+},
+{
+  "type":"javafx.scene.effect.Effect"
+},
+{
+  "type":"javafx.scene.image.Image"
+},
+{
+  "type":"javafx.scene.image.ImageView"
+},
+{
+  "type":"javafx.scene.layout.Pane"
+},
+{
+  "type":"javafx.scene.layout.Region"
+},
+{
+  "type":"javafx.scene.shape.Rectangle"
+},
+{
+  "type":"javafx.scene.shape.SVGPath"
+},
+{
+  "type":"javafx.scene.shape.Shape"
+},
+{
+  "type":"javafx.scene.text.Font"
+},
+{
+  "type":"javafx.scene.text.Text"
+},
+{
+  "type":"javafx.scene.transform.Transform"
+},
+{
+  "type":"javafx.stage.PopupWindow"
+},
+{
+  "type":"javafx.stage.Stage"
+},
+{
+  "type":"javafx.stage.Window"
+},
+{
+  "type":"sun.misc.Unsafe",
+  "fields":[{"name":"theUnsafe"}]
+},
+{
+  "type":"sun.security.provider.MD5",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "type":"sun.security.provider.SHA",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+}
+]
