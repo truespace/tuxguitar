@@ -257,7 +257,14 @@ $ mvn package gluonfx:build
 $ cd -
 ```
 
-Run it from `target`, so that it finds the `share` folder beside the executable.
+Run it from `target`, so that it finds the `share` folder beside the executable, or wrap it
+into an application bundle carrying the TuxGuitar icon:
+
+```sh
+$ desktop/TuxGuitar-gluon/src/macos/make-app-bundle.sh
+```
+
+This writes `desktop/TuxGuitar-gluon/target/TuxGuitar.app`, which starts from Finder.
 
 ## Build on FreeBSD
 
