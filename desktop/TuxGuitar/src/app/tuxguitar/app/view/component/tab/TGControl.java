@@ -6,6 +6,7 @@ import app.tuxguitar.app.system.config.TGConfigManager;
 import app.tuxguitar.app.system.keybindings.KeyBindingActionManager;
 import app.tuxguitar.app.transport.TGTransport;
 import app.tuxguitar.app.ui.TGApplication;
+import app.tuxguitar.app.util.TGPlatformUtil;
 import app.tuxguitar.app.view.util.TGBufferedPainterListenerLocked;
 import app.tuxguitar.graphics.control.TGBeatImpl;
 import app.tuxguitar.graphics.control.TGLayout;
@@ -180,7 +181,9 @@ public class TGControl {
 			// i.e. scrolled OR playedMeasure changed OR canvas size changed (window resized, track table visible state changed)
 			// OR zoom in/out OR changed layout
 			// else, painting only the playedMeasure is sufficient, don't repaint everything
-			if ((!isPlaying) || (this.scrollX!=this.lastScrollX) || (this.scrollY!=this.lastScrollY)
+			// on iOS the view is painted straight on the canvas, which is cleared before every
+			// paint: a partial repaint would leave everything but the played beat blank
+			if ((!isPlaying) || TGPlatformUtil.isIOS() || (this.scrollX!=this.lastScrollX) || (this.scrollY!=this.lastScrollY)
 					|| (playedMeasure!=this.lastPaintedPlayedMeasure)
 					|| (canvasWidth!=this.lastCanvasWidth) || (canvasHeight!=this.lastCanvasHeight)
 					|| (scale != this.lastScale) || (this.tablature.getViewLayout().getStyle() != this.lastLayoutStyle)

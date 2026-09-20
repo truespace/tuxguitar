@@ -1,6 +1,7 @@
 package app.tuxguitar.app.view.util;
 
 import app.tuxguitar.app.ui.TGApplication;
+import app.tuxguitar.app.util.TGPlatformUtil;
 import app.tuxguitar.editor.TGEditorManager;
 import app.tuxguitar.ui.event.UIDisposeEvent;
 import app.tuxguitar.ui.event.UIDisposeListener;
@@ -54,6 +55,11 @@ public class TGBufferedPainterLocked {
 
 	public void paintBufferLocked(UIPainter painter) {
 		TGEditorManager editor = TGEditorManager.getInstance(this.context);
+		if( TGPlatformUtil.isIOS() ) {
+			this.paintDirectly(editor, painter);
+
+			return;
+		}
 		if (editor.tryLock()) {
 			try {
 				this.fillPaintBuffer();
@@ -67,6 +73,22 @@ public class TGBufferedPainterLocked {
 
 		if( this.buffer != null && !this.buffer.isDisposed() ) {
 			painter.drawImage(this.buffer, 0, 0);
+		}
+	}
+
+	/**
+	 * Paints on the control itself: on iOS an image of the whole view is rendered through a
+	 * texture of that size times the screen scale, which is blurry and fails on a large score.
+	 */
+	private void paintDirectly(TGEditorManager editor, UIPainter painter) {
+		if( editor.tryLock() ) {
+			try {
+				this.handle.paintControl(painter);
+			} finally {
+				editor.unlock();
+			}
+		} else {
+			this.redrawLater();
 		}
 	}
 

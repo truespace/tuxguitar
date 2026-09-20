@@ -1,13 +1,16 @@
 package app.tuxguitar.app.view.component.tab;
 
 import app.tuxguitar.app.system.config.TGConfigKeys;
+import app.tuxguitar.app.util.TGPlatformUtil;
 import app.tuxguitar.app.system.config.TGConfigManager;
 import app.tuxguitar.graphics.control.TGLayoutStyles;
 
 public class TablatureStyles extends TGLayoutStyles {
 
 	public TablatureStyles(TGConfigManager config) {
-		this.setBufferEnabled(true);
+		// iOS: images are rendered through a texture the size of the score, which is blurry when
+		// downsampled back to the image and fails entirely past the maximum texture size
+		this.setBufferEnabled(!TGPlatformUtil.isIOS());
 		this.setStringSpacing(config.getIntegerValue(TGConfigKeys.STYLE_STRING_SPACING));
 		this.setScoreLineSpacing(config.getIntegerValue(TGConfigKeys.STYLE_SCORE_LINE_SPACING));
 		this.setFirstMeasureSpacing(config.getIntegerValue(TGConfigKeys.STYLE_FIRST_MEASURE_SPACING));
