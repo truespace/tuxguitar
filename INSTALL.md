@@ -161,6 +161,104 @@ $ cd -
 
 The application is now located in the `desktop/build-scripts/tuxguitar-macosx-swt-cocoa/target/tuxguitar-9.99-SNAPSHOT-macosx-swt-cocoa.app` folder. Start TuxGuitar by double-clicking on the folder.
 
+## Build for iPadOS / iOS (experimental)
+
+This fork can build TuxGuitar as a native iOS app, running the JavaFX user interface
+through a GraalVM native image. It is experimental: tested on an iPad Pro 13" (M4),
+installed with a personal Apple developer certificate, not distributed through the App Store.
+
+What works: the editor and its dialogs, opening and saving files (through the Files app),
+all bundled file formats and sound playback. PDF export, printing, the tuner and external
+MIDI devices need AWT or javax.sound and are left out of the build.
+
+### Install Prerequisites
+
+- macOS on Apple Silicon, with Xcode and its command line tools
+- Maven, and an Apple developer account with a provisioning profile covering the bundle
+  identifier of the app (`gluon.app.identifier` in `desktop/TuxGuitar-gluon/pom.xml`)
+- Gluon GraalVM 22.1.0.1 (Java 17), unpacked in `~/.gluon`:
+
+```sh
+$ mkdir -p ~/.gluon && cd ~/.gluon
+$ curl -sSfL -o graalvm-ios.tar.gz https://github.com/gluonhq/graal/releases/download/gluon-22.1.0.1-Final/graalvm-svm-java17-darwin-m1-gluon-22.1.0.1-Final.tar.gz
+$ tar xzf graalvm-ios.tar.gz && rm graalvm-ios.tar.gz
+$ cd -
+```
+
+Newer GraalVM releases do not work here: Gluon substrate only ships the iOS static JDK
+libraries and CAP cache of that release, and linking fails against anything else.
+Its simulator support is x86_64 only, so builds are tested on a device.
+
+### Build the modules
+
+JavaFX must match the static SDK linked by substrate (the jfx21 branch):
+
+```sh
+$ cd desktop
+$ mvn -N install
+$ cd build-scripts/tuxguitar-gluon
+$ mvn clean install -DskipTests -Djavafx.version=21.0.3
+$ cd -
+```
+
+### Build and sign the app
+
+```sh
+$ export GRAALVM_HOME=$(ls -d ~/.gluon/graalvm-svm-java17*/Contents/Home)
+$ export JAVA_HOME=$GRAALVM_HOME
+$ cd desktop/TuxGuitar-gluon
+$ mvn -Dgluonfx.target=ios package gluonfx:build gluonfx:package
+$ cd -
+```
+
+This takes about ten minutes and produces a signed `tuxguitar-gluon.app` and
+`tuxguitar-gluon.ipa` in `desktop/TuxGuitar-gluon/target/gluonfx/arm64-ios`.
+The `share` folder (soundfont, translations, templates) is bundled from
+`desktop/TuxGuitar-gluon/src/ios/assets`, which the build regenerates.
+
+### Install on a device
+
+List the paired devices, then install and start the app:
+
+```sh
+$ xcrun devicectl list devices
+$ xcrun devicectl device install app --device <device-id> desktop/TuxGuitar-gluon/target/gluonfx/arm64-ios/tuxguitar-gluon.app
+$ xcrun devicectl device process launch --device <device-id> --console com.daengi.tuxguitar
+```
+
+Songs are read from and written to the app's Documents folder, which the Files app shows
+under "On My iPad". Reinstalling the app may reset that folder, so move songs out first.
+
+### Debugging on a device
+
+The console is only visible while the app is started through `devicectl`, so the build
+also writes it to `Library/gluon/tuxguitar-gluon.log` in the app container, together with
+two optional traces:
+
+```sh
+# -Dgluon.ios.snapshot=20 : after 20s, log every window and save screenshots of them as BMP
+# -Dgluon.ios.eventlog=true : log windows, popups and the input events they receive
+$ mvn -Dgluonfx.target=ios -Dgluon.ios.snapshot=20 package gluonfx:build gluonfx:package
+
+# read the files back
+$ xcrun devicectl device copy from --device <device-id> --domain-type appDataContainer \
+    --domain-identifier com.daengi.tuxguitar --source Library/gluon --destination ./ios-logs
+```
+
+### Build the macOS native image
+
+The same module builds a native macOS binary, with GraalVM 23 for the host:
+
+```sh
+$ export GRAALVM_HOME=$(ls -d ~/.gluon/graalvm-java23*/Contents/Home)
+$ export JAVA_HOME=$GRAALVM_HOME
+$ cd desktop/TuxGuitar-gluon
+$ mvn package gluonfx:build
+$ cd -
+```
+
+Run it from `target`, so that it finds the `share` folder beside the executable.
+
 ## Build on FreeBSD
 
 ### Install Prerequisites

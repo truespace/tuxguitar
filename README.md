@@ -14,6 +14,16 @@ Please download TuxGuitar only from the website or the GitHub link provided abov
 
 To build TuxGuitar from source code, refer to the [INSTALL.md](INSTALL.md) file.
 
+## iPad / iOS build (experimental, this fork only)
+
+This fork adds an iOS build of TuxGuitar: the JavaFX user interface compiled to a native
+iOS app with GraalVM and Gluon. The editor, the file formats, opening and saving through
+the Files app and sound playback work; PDF export, printing, the tuner and external MIDI
+devices are not part of the build.
+
+There is no ready made package: build and sign it yourself with an Apple developer
+account, as described in [INSTALL.md](INSTALL.md#build-for-ipados--ios-experimental).
+
 ## Contribute
 
 If you want to contribute to TuxGuitar, you will find a helpful description in the [CONTRIBUTING.md](docs/CONTRIBUTING.md) file.
