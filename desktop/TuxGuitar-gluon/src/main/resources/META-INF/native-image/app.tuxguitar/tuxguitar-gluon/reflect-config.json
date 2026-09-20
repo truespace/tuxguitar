@@ -1,0 +1,297 @@
+[
+  {
+    "name": "app.tuxguitar.gluon.TGGluonPreferencesFactory",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.ascii.ASCIISongWriterPlugin",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.gpx.v6.GPXInputStreamPlugin",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.gpx.v7.GPXInputStreamPlugin",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.gtp.GP1InputStreamPlugin",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.gtp.GP2InputStreamPlugin",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.gtp.GP3InputStreamPlugin",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.gtp.GP3OutputStreamPlugin",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.gtp.GP4InputStreamPlugin",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.gtp.GP4OutputStreamPlugin",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.gtp.GP5InputStreamPlugin",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.gtp.GP5OutputStreamPlugin",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.gtp.ui.GTPSettingsPlugin",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.lilypond.LilypondSettingsHandlerPlugin",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.lilypond.LilypondSongWriterPlugin",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.midi.MidiSettingsHandlerPlugin",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.midi.MidiSongReaderPlugin",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.midi.MidiSongWriterPlugin",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.musicxml.MusicXMLSongWriterPlugin",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.ptb.PTInputStreamPlugin",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.tef2.TESongReaderPlugin",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.tef3.TESongReaderPlugin",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.tg.v07.TGSongReaderPluginImpl",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.tg.v08.TGSongReaderPluginImpl",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.tg.v09.TGSongReaderPluginImpl",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.tg.v10.TGSongReaderPluginImpl",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.tg.v10.TGSongWriterPluginImpl",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.tg.v11.TGSongReaderPluginImpl",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.tg.v11.TGSongWriterPluginImpl",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.tg.v12.TGSongReaderPluginImpl",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.tg.v12.TGSongWriterPluginImpl",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.tg.v13.TGSongReaderPluginImpl",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.tg.v13.TGSongWriterPluginImpl",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.tg.v15.TGSongReaderPluginImpl",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.io.tg.v15.TGSongWriterPluginImpl",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.midi.synth.TGSynthPortProviderPlugin",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.midi.synth.impl.GervillExtensionPlugin",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.midi.synth.impl.settings.GervillPluginSettings",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.midi.synth.ui.TGSynthDialogPlugin",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "app.tuxguitar.ui.jfx.JFXApplicationFactory",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "media.sound.AudioFileSoundbankReader",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "media.sound.AudioFloatFormatConverter",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "media.sound.DLSSoundbankReader",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "media.sound.SF2SoundbankReader",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "media.sound.SoftMidiAudioFileReader",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "media.sound.SoftProvider",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "media.sound.WaveExtensibleFileReader",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "media.sound.WaveFloatFileReader",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "media.sound.WaveFloatFileWriter",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "org.graalvm.nativeimage.Platform$ANDROID_AARCH64",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "org.graalvm.nativeimage.Platform$IOS_AARCH64",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "org.graalvm.nativeimage.Platform$IOS_AMD64",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "org.graalvm.nativeimage.Platform$LINUX_AARCH64",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "org.graalvm.nativeimage.Platform$LINUX_AMD64",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "org.graalvm.nativeimage.Platform$LINUX_RISCV64",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "org.graalvm.nativeimage.Platform$MACOS_AARCH64",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "org.graalvm.nativeimage.Platform$MACOS_AMD64",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "org.graalvm.nativeimage.Platform$WINDOWS_AARCH64",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "org.graalvm.nativeimage.Platform$WINDOWS_AMD64",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
+  }
+]

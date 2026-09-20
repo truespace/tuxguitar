@@ -3,16 +3,21 @@ package app.tuxguitar.midi.synth.impl;
 import java.io.File;
 
 import javax.sound.midi.Instrument;
+import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Patch;
 import javax.sound.midi.Soundbank;
+import javax.sound.midi.spi.SoundbankReader;
 
 import app.tuxguitar.util.TGContext;
 import app.tuxguitar.util.TGExpressionResolver;
 
+import media.sound.AudioFileSoundbankReader;
+import media.sound.DLSSoundbankReader;
 import media.sound.EmergencySoundbank;
 import media.sound.ModelPatch;
 import media.sound.SF2Instrument;
+import media.sound.SF2SoundbankReader;
 import media.sound.DLSInstrument;
 
 public class GervillSoundbankFactory {
@@ -98,7 +103,23 @@ public class GervillSoundbankFactory {
 
 	private Soundbank createSoundbank(TGContext context, String soundbankPath) {
 		try {
-			return MidiSystem.getSoundbank(new File(TGExpressionResolver.getInstance(context).resolve(soundbankPath)));
+			File file = new File(TGExpressionResolver.getInstance(context).resolve(soundbankPath));
+
+			// read with the bundled Gervill first: MidiSystem returns the soundbank of the first
+			// provider accepting the file, which may be the JDK's own Gervill (com.sun.media.sound)
+			// depending on the provider order, and its instruments cannot be used here
+			SoundbankReader[] readers = new SoundbankReader[] {new SF2SoundbankReader(), new DLSSoundbankReader(), new AudioFileSoundbankReader()};
+			for(SoundbankReader reader : readers) {
+				try {
+					Soundbank soundbank = reader.getSoundbank(file);
+					if( soundbank != null ) {
+						return soundbank;
+					}
+				} catch (InvalidMidiDataException e) {
+					// not supported by this reader
+				}
+			}
+			return MidiSystem.getSoundbank(file);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

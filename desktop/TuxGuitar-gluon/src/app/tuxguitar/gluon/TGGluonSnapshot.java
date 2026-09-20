@@ -2,10 +2,8 @@ package app.tuxguitar.gluon;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -20,13 +18,14 @@ import javafx.stage.Window;
 /**
  * Debug helper for devices without screenshot tooling (e.g. iOS through devicectl):
  * after a delay, logs every JavaFX window and writes a snapshot of each visible scene
- * as a BMP file in user.home (no AWT/ImageIO needed). Messages also go to user.home/tuxguitar-gluon.log.
+ * as a BMP file in user.home (no AWT/ImageIO needed). Messages go to TGGluonLog.
  *
  * Enabled with -Dtuxguitar.gluon.snapshot=<delay in seconds>.
  */
 public class TGGluonSnapshot {
 
-	private static final String PREFIX = "[TGGluonSnapshot] ";
+	private static final int CAPTURES = 3;
+	private static final long CAPTURE_INTERVAL = 8000;
 
 	public static void schedule(final int delaySeconds) {
 		Thread thread = new Thread(new Runnable() {
@@ -37,19 +36,21 @@ public class TGGluonSnapshot {
 						log("heartbeat " + elapsed + "s");
 						Thread.sleep(Math.min(5, delaySeconds - elapsed) * 1000L);
 					}
-					// dump first: Platform.runLater below may never return when the FX thread is stuck
-					log("thread dump before snapshot:");
-					dumpThreads();
-					final CountDownLatch done = new CountDownLatch(1);
-					Platform.runLater(new Runnable() {
-						public void run() {
-							capture();
-							done.countDown();
+					// several captures: the screen changes while playing
+					for (int round = 0; round < CAPTURES; round ++) {
+						final int index = round;
+						final CountDownLatch done = new CountDownLatch(1);
+						Platform.runLater(new Runnable() {
+							public void run() {
+								capture(index);
+								done.countDown();
+							}
+						});
+						if (!done.await(5, TimeUnit.SECONDS)) {
+							log("FX application thread did not respond, thread dump:");
+							dumpThreads();
 						}
-					});
-					if (!done.await(5, TimeUnit.SECONDS)) {
-						log("FX application thread did not respond, thread dump:");
-						dumpThreads();
+						Thread.sleep(CAPTURE_INTERVAL);
 					}
 				} catch (InterruptedException e) {
 					return;
@@ -60,14 +61,8 @@ public class TGGluonSnapshot {
 		thread.start();
 	}
 
-	static synchronized void log(String message) {
-		String line = PREFIX + System.currentTimeMillis() + " " + message;
-		System.err.println(line);
-		try (PrintWriter writer = new PrintWriter(new FileWriter(new File(System.getProperty("user.home"), "tuxguitar-gluon.log"), true))) {
-			writer.println(line);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	static void log(String message) {
+		TGGluonLog.log(message);
 	}
 
 	private static void dumpThreads() {
@@ -80,7 +75,7 @@ public class TGGluonSnapshot {
 		}
 	}
 
-	private static void capture() {
+	private static void capture(int round) {
 		File folder = new File(System.getProperty("user.home"));
 		int index = 0;
 		for (Window window : Window.getWindows()) {
@@ -90,7 +85,7 @@ public class TGGluonSnapshot {
 					+ " bounds=" + window.getX() + "," + window.getY() + " " + window.getWidth() + "x" + window.getHeight()
 					+ " title=" + title);
 			if (window.isShowing() && window.getScene() != null) {
-				File file = new File(folder, "snapshot-" + index + ".bmp");
+				File file = new File(folder, "snapshot-" + round + "-" + index + ".bmp");
 				try {
 					writeBmp(window.getScene().snapshot(null), file);
 					log("wrote " + file.getAbsolutePath());

@@ -39,6 +39,9 @@
 		<module>../../TuxGuitar-midi-ui</module>
 		<module>../../../common/TuxGuitar-lilypond</module>
 		<module>../../TuxGuitar-lilypond-ui</module>
+		<module>../../gervill</module>
+		<module>../../TuxGuitar-synth</module>
+		<module>../../TuxGuitar-synth-gervill</module>
 		<module>../../TuxGuitar-gluon</module>
 	</modules>
 </project>

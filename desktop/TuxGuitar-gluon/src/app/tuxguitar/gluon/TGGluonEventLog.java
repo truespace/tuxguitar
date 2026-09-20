@@ -13,7 +13,7 @@ import javafx.stage.Window;
 /**
  * Debug helper: logs windows (including popups) as they are shown and hidden, and the
  * pointer/touch/action events they receive, with their target.
- * Messages go to stderr and user.home/tuxguitar-gluon.log (see TGGluonSnapshot).
+ * Messages go to TGGluonLog.
  *
  * Enabled with -Dtuxguitar.gluon.eventlog=true.
  */
@@ -51,11 +51,11 @@ public class TGGluonEventLog {
 					public void onChanged(Change<? extends Window> change) {
 						while (change.next()) {
 							for (Window window : change.getAddedSubList()) {
-								TGGluonSnapshot.log("window added: " + describe(window));
+								TGGluonLog.log("window added: " + describe(window));
 								watch(window);
 							}
 							for (Window window : change.getRemoved()) {
-								TGGluonSnapshot.log("window removed: " + describe(window));
+								TGGluonLog.log("window removed: " + describe(window));
 							}
 						}
 					}
@@ -77,7 +77,7 @@ public class TGGluonEventLog {
 						position = " at " + (int) mouseEvent.getSceneX() + "," + (int) mouseEvent.getSceneY()
 								+ " synthesized=" + mouseEvent.isSynthesized();
 					}
-					TGGluonSnapshot.log(type + " on " + describe(window) + " target=" + event.getTarget() + position);
+					TGGluonLog.log(type + " on " + describe(window) + " target=" + event.getTarget() + position);
 				}
 			}
 		});

@@ -32,12 +32,21 @@ public class TGGluonLauncher {
 				System.setProperty(TG_SHARE_PATH, new File(homeDir, "share").getAbsolutePath());
 			}
 		}
-		System.err.println("[TGGluonLauncher] home=" + System.getProperty(TG_HOME_PATH) + " share=" + System.getProperty(TG_SHARE_PATH));
-
 		if (isIOS()) {
+			TGGluonLog.copyConsoleToFile();
+
 			// iOS apps never quit by themselves: closing the splash (or any other) stage must not end the FX runtime
 			Platform.setImplicitExit(false);
+
+			// only one instance can run on iOS: a lock left by a killed process (TGMainSingleton) would
+			// make this one hand its URL over to that "running instance" and exit
+			File lockFile = new File(System.getProperty("java.io.tmpdir"), "tuxguitar-" + System.getProperty("user.name") + File.separator + "tuxguitar.lock");
+			if (lockFile.exists() && !lockFile.delete()) {
+				System.err.println("[TGGluonLauncher] could not delete " + lockFile);
+			}
 		}
+
+		TGGluonLog.log("home=" + System.getProperty(TG_HOME_PATH) + " share=" + System.getProperty(TG_SHARE_PATH));
 
 		String snapshotDelay = System.getProperty(TG_SNAPSHOT);
 		if (snapshotDelay != null && !snapshotDelay.isEmpty()) {
