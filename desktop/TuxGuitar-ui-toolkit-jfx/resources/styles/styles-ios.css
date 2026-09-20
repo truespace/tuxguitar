@@ -3,3 +3,27 @@
 .menu .label {
   -fx-font-family: "Apple SD Gothic Neo";
 }
+
+/* caption of the dialogs, which carry no window decoration on iOS */
+.JFXWindowCaption {
+  -fx-background-color: -fx-box-border, linear-gradient(to bottom, derive(-fx-base, 20%), derive(-fx-base, -5%));
+  -fx-background-insets: 0, 0 0 1 0;
+}
+
+.JFXWindowCaptionTitle {
+  -fx-padding: 0 0 0 12;
+  -fx-content-display: center;
+  -fx-alignment: center-left;
+  -fx-font-weight: bold;
+}
+
+.JFXWindowCaptionClose {
+  -fx-alignment: center;
+  -fx-font-size: 15pt;
+  -fx-text-fill: -fx-text-base-color;
+}
+
+.JFXWindowResizeHandle {
+  -fx-background-color: linear-gradient(from 0% 100% to 100% 0%, derive(-fx-base, -25%) 0%, derive(-fx-base, -25%) 40%, transparent 40%);
+  -fx-opacity: 0.7;
+}

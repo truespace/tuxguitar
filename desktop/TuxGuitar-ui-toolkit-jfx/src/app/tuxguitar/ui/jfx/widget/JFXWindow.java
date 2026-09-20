@@ -46,6 +46,7 @@ public class JFXWindow extends JFXPaneContainer<Pane> implements UIWindow {
 	private JFXSyncProcess layoutProcess;
 	private boolean resizable;
 	private float topInset;
+	private JFXWindowCaption caption;
 
 	public JFXWindow(Stage stage, JFXContainer<? extends Pane> parent) {
 		super(new Pane(), parent);
@@ -71,6 +72,10 @@ public class JFXWindow extends JFXPaneContainer<Pane> implements UIWindow {
 		this.stage.getScene().widthProperty().addListener(this.sceneResizeListener);
 		this.stage.getScene().heightProperty().addListener(this.sceneResizeListener);
 		this.stage.setOnCloseRequest(new JFXWindowCloseListener(this));
+
+		if( parent != null && JFXPlatformUtil.isIOS() ) {
+			this.caption = new JFXWindowCaption(this);
+		}
 	}
 
 	public JFXWindow(JFXWindow parent, boolean modal, boolean resizable) {
@@ -95,13 +100,30 @@ public class JFXWindow extends JFXPaneContainer<Pane> implements UIWindow {
 	}
 
 	private static float computeTopInset(JFXContainer<? extends Pane> parent) {
-		// on iOS the full screen main window starts under the status bar, which takes the touches:
-		// keep the menu bar and the content below it
-		if( parent == null && JFXPlatformUtil.isIOS() ) {
+		if( JFXPlatformUtil.isIOS() ) {
+			// windows carry no decoration on iOS: the dialogs get a caption of their own
+			if( parent != null ) {
+				return JFXWindowCaption.HEIGHT;
+			}
+			// the full screen main window starts under the status bar, which takes the touches:
+			// keep the menu bar and the content below it
 			float visualTop = (float) Screen.getPrimary().getVisualBounds().getMinY();
+
 			return (visualTop > 0 ? visualTop : IOS_STATUS_BAR_HEIGHT);
 		}
 		return 0f;
+	}
+
+	/**
+	 * Moves the window inside the screen, so that its caption and buttons stay reachable.
+	 */
+	private void moveInsideScreen() {
+		Rectangle2D screen = Screen.getPrimary().getVisualBounds();
+
+		this.stage.setWidth(Math.min(this.stage.getWidth(), screen.getWidth()));
+		this.stage.setHeight(Math.min(this.stage.getHeight(), screen.getHeight()));
+		this.stage.setX(Math.min(Math.max(screen.getMinX(), this.stage.getX()), screen.getMaxX() - this.stage.getWidth()));
+		this.stage.setY(Math.min(Math.max(screen.getMinY(), this.stage.getY()), screen.getMaxY() - this.stage.getHeight()));
 	}
 
 	public void addChild(JFXNode<? extends Node> uiControl) {
@@ -201,6 +223,11 @@ public class JFXWindow extends JFXPaneContainer<Pane> implements UIWindow {
 		}
 
 		this.getStage().show();
+
+		if( this.caption != null ) {
+			this.moveInsideScreen();
+			this.caption.layout();
+		}
 
 		if( this.packing ) {
 			this.repack();
@@ -436,6 +463,9 @@ public class JFXWindow extends JFXPaneContainer<Pane> implements UIWindow {
 		}
 
 		public void run() {
+			if( this.window.caption != null ) {
+				this.window.caption.layout();
+			}
 			this.window.layout();
 		}
 	}
