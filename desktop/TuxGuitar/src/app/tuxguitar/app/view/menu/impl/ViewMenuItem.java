@@ -5,6 +5,9 @@ import app.tuxguitar.app.TuxGuitar;
 import app.tuxguitar.app.action.impl.layout.TGSetChordDiagramEnabledAction;
 import app.tuxguitar.app.action.impl.layout.TGSetChordNameEnabledAction;
 import app.tuxguitar.app.action.impl.layout.TGSetCompactViewAction;
+import app.tuxguitar.app.action.impl.layout.TGSetLayoutFontScaleDecrementAction;
+import app.tuxguitar.app.action.impl.layout.TGSetLayoutFontScaleIncrementAction;
+import app.tuxguitar.app.action.impl.layout.TGSetLayoutFontScaleResetAction;
 import app.tuxguitar.app.action.impl.layout.TGSetLayoutScaleDecrementAction;
 import app.tuxguitar.app.action.impl.layout.TGSetLayoutScaleIncrementAction;
 import app.tuxguitar.app.action.impl.layout.TGSetLayoutScaleResetAction;
@@ -59,6 +62,9 @@ public class ViewMenuItem extends TGMenuItem {
 	private UIMenuActionItem zoomIn;
 	private UIMenuActionItem zoomOut;
 	private UIMenuActionItem zoomReset;
+	private UIMenuActionItem fontIncrement;
+	private UIMenuActionItem fontDecrement;
+	private UIMenuActionItem fontReset;
 
 	private UIMenuSubMenuItem chordMenuItem;
 	private UIMenuCheckableItem chordName;
@@ -156,6 +162,20 @@ public class ViewMenuItem extends TGMenuItem {
 		this.zoomReset = this.layoutMenuItem.getMenu().createActionItem();
 		this.zoomReset.addSelectionListener(this.createActionProcessor(TGSetLayoutScaleResetAction.NAME));
 
+		this.layoutMenuItem.getMenu().createSeparator();
+
+		//--FONT SIZE INCREMENT--
+		this.fontIncrement = this.layoutMenuItem.getMenu().createActionItem();
+		this.fontIncrement.addSelectionListener(this.createActionProcessor(TGSetLayoutFontScaleIncrementAction.NAME));
+
+		//--FONT SIZE DECREMENT--
+		this.fontDecrement = this.layoutMenuItem.getMenu().createActionItem();
+		this.fontDecrement.addSelectionListener(this.createActionProcessor(TGSetLayoutFontScaleDecrementAction.NAME));
+
+		//--FONT SIZE RESET--
+		this.fontReset = this.layoutMenuItem.getMenu().createActionItem();
+		this.fontReset.addSelectionListener(this.createActionProcessor(TGSetLayoutFontScaleResetAction.NAME));
+
 		this.loadIcons();
 		this.loadProperties();
 	}
@@ -181,6 +201,7 @@ public class ViewMenuItem extends TGMenuItem {
 		this.chordName.setChecked( (style & TGLayout.DISPLAY_CHORD_NAME) != 0 );
 		this.chordDiagram.setChecked( (style & TGLayout.DISPLAY_CHORD_DIAGRAM) != 0 );
 		this.zoomReset.setEnabled(!Tablature.DEFAULT_SCALE.equals(tablature.getScale()));
+		this.fontReset.setEnabled(!Tablature.DEFAULT_FONT_SCALE.equals(tablature.getFontScale()));
 	}
 
 	public void loadProperties(){
@@ -206,6 +227,9 @@ public class ViewMenuItem extends TGMenuItem {
 		setMenuItemTextAndAccelerator(this.zoomIn, "view.zoom.in", TGSetLayoutScaleIncrementAction.NAME);
 		setMenuItemTextAndAccelerator(this.zoomOut, "view.zoom.out", TGSetLayoutScaleDecrementAction.NAME);
 		setMenuItemTextAndAccelerator(this.zoomReset, "view.zoom.reset", TGSetLayoutScaleResetAction.NAME);
+		setMenuItemTextAndAccelerator(this.fontIncrement, "view.font-size.increase", TGSetLayoutFontScaleIncrementAction.NAME);
+		setMenuItemTextAndAccelerator(this.fontDecrement, "view.font-size.decrease", TGSetLayoutFontScaleDecrementAction.NAME);
+		setMenuItemTextAndAccelerator(this.fontReset, "view.font-size.reset", TGSetLayoutFontScaleResetAction.NAME);
 	}
 
 	public void loadIcons(){

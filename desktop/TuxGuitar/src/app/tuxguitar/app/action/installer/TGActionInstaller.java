@@ -62,6 +62,10 @@ import app.tuxguitar.app.action.impl.insert.TGOpenTextDialogAction;
 import app.tuxguitar.app.action.impl.layout.TGSetChordDiagramEnabledAction;
 import app.tuxguitar.app.action.impl.layout.TGSetChordNameEnabledAction;
 import app.tuxguitar.app.action.impl.layout.TGSetCompactViewAction;
+import app.tuxguitar.app.action.impl.layout.TGSetLayoutFontScaleAction;
+import app.tuxguitar.app.action.impl.layout.TGSetLayoutFontScaleDecrementAction;
+import app.tuxguitar.app.action.impl.layout.TGSetLayoutFontScaleIncrementAction;
+import app.tuxguitar.app.action.impl.layout.TGSetLayoutFontScaleResetAction;
 import app.tuxguitar.app.action.impl.layout.TGSetLayoutScaleAction;
 import app.tuxguitar.app.action.impl.layout.TGSetLayoutScaleDecrementAction;
 import app.tuxguitar.app.action.impl.layout.TGSetLayoutScaleIncrementAction;
@@ -509,6 +513,10 @@ public class TGActionInstaller {
 		installAction(new TGSetLayoutScaleIncrementAction(context));
 		installAction(new TGSetLayoutScaleDecrementAction(context));
 		installAction(new TGSetLayoutScaleResetAction(context));
+		installAction(new TGSetLayoutFontScaleAction(context));
+		installAction(new TGSetLayoutFontScaleIncrementAction(context));
+		installAction(new TGSetLayoutFontScaleDecrementAction(context));
+		installAction(new TGSetLayoutFontScaleResetAction(context));
 		installAction(new TGToggleHighlightPlayedBeatAction(context));
 		installAction(new TGToggleContinuousScrollingAction(context));
 

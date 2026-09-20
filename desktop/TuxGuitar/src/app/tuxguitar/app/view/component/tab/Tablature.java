@@ -37,6 +37,9 @@ import app.tuxguitar.util.TGNoteRange;
 public class Tablature implements TGController {
 
 	public static final Float DEFAULT_SCALE = 1f;
+	public static final Float DEFAULT_FONT_SCALE = 1f;
+	public static final Float MIN_FONT_SCALE = 0.5f;
+	public static final Float MAX_FONT_SCALE = 3f;
 	public static final Float MIN_SCALE = 0.5f;
 	public static final Float MAX_SCALE = 2f;
 
@@ -51,11 +54,13 @@ public class Tablature implements TGController {
 	private TGLayout viewLayout;
 	private EditorKit editorKit;
 	private Float scale;
+	private Float fontScale;
 
 	public Tablature(TGContext context, TGDocumentManager documentManager) {
 		this.context = context;
 		this.documentManager = documentManager;
 		this.scale = DEFAULT_SCALE;
+		this.fontScale = DEFAULT_FONT_SCALE;
 		this.caret = new Caret(this);
 		this.selector = new Selector(this);
 		this.editorKit = new EditorKit(this);
@@ -171,7 +176,7 @@ public class Tablature implements TGController {
 
 	public void reloadStyles() {
 		if( this.getViewLayout() != null ){
-			this.getViewLayout().loadStyles(this.scale);
+			this.getViewLayout().loadStyles(this.scale, this.scale * this.fontScale);
 		}
 		this.loadCaretStyles();
 	}
@@ -204,6 +209,21 @@ public class Tablature implements TGController {
 		getCaret().setColorCurrentVoice(config.getColorModelConfigValue(TGConfigKeys.COLOR_CARET_CURRENT_VOICE));
 		getCaret().setColorOtherVoice(config.getColorModelConfigValue(TGConfigKeys.COLOR_CARET_OTHER_VOICE));
 		getCaret().setAlpha(config.getIntegerValue(TGConfigKeys.COLOR_CARET_ALPHA));
+	}
+
+	public Float getFontScale() {
+		return this.fontScale;
+	}
+
+	/**
+	 * Scales the fonts of the score (e.g. the tablature fret numbers) on top of the layout scale.
+	 */
+	public void scaleFont(Float fontScale) {
+		fontScale = Math.min(MAX_FONT_SCALE, Math.max(MIN_FONT_SCALE, fontScale));
+		if(!this.fontScale.equals(fontScale)) {
+			this.fontScale = (fontScale != null ? fontScale : DEFAULT_FONT_SCALE);
+			this.reloadStyles();
+		}
 	}
 
 	public void scale(Float scale) {

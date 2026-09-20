@@ -33,6 +33,8 @@ public class TablatureEditor implements TGEventListener{
 		// Restore saved zoom level from config
 		TGConfigManager config = TGConfigManager.getInstance(this.context);
 		float savedScale = config.getFloatValue(TGConfigKeys.LAYOUT_SCALE, Tablature.DEFAULT_SCALE);
+		float savedFontScale = config.getFloatValue(TGConfigKeys.LAYOUT_FONT_SCALE, Tablature.DEFAULT_FONT_SCALE);
+		this.tablature.scaleFont(savedFontScale);
 		this.tablature.scale(savedScale);
 
 		this.tablature.reloadViewLayout();
