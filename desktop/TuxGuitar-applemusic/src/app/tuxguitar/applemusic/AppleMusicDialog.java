@@ -137,7 +137,7 @@ public class AppleMusicDialog {
 				}
 			}
 		});
-		layout.set(match, 7, 1, UITableLayout.ALIGN_LEFT, UITableLayout.ALIGN_CENTER, true, false, 1, 1, 200f, 25f, null);
+		layout.set(match, 8, 1, UITableLayout.ALIGN_FILL, UITableLayout.ALIGN_CENTER, true, false, 1, 1, 220f, 25f, null);
 
 		UIButton close = factory.createButton(this.dialog);
 		close.setText(TuxGuitar.getProperty("close"));
@@ -150,7 +150,7 @@ public class AppleMusicDialog {
 				AppleMusicDialog.this.dialog.dispose();
 			}
 		});
-		layout.set(close, 7, 2, UITableLayout.ALIGN_RIGHT, UITableLayout.ALIGN_CENTER, true, false, 1, 2, 80f, 25f, null);
+		layout.set(close, 8, 2, UITableLayout.ALIGN_RIGHT, UITableLayout.ALIGN_CENTER, true, false, 1, 1, 80f, 25f, null);
 
 		// the settings take effect while the dialog is open, so that the offset can be dialled in
 		// against the drift shown below while the score plays
