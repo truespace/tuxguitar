@@ -71,11 +71,11 @@ public class TGTuner extends Thread {
 				 synchronized(this) {
 
 					// read from the input
-					this.dataLine.read(this.data,0,this.settings.getBufferSize());
+					this.dataLine.read(this.data,0,this.data.length);
 
 					// preapare the arrays for FFT
 					for (int i=0; i<this.settings.getBufferSize(); i++) {
-						this.ar[i] = this.data[i]; // implicit cast to double
+						this.ar[i] = this.getSample(i);
 						this.ai[i] = 0.0f;
 					}
 
@@ -148,6 +148,22 @@ public class TGTuner extends Thread {
 	}
 
 
+	protected int getBytesPerSample() {
+		return ((this.settings.getSampleSize() + 7) / 8);
+	}
+
+	/**
+	 * Reads one sample of the buffer, on the scale of the 8 bit samples the FFT has always been
+	 * fed with: 16 bit samples only add resolution, so that the noise gate keeps its meaning.
+	 */
+	protected double getSample(int index) {
+		if (this.getBytesPerSample() == 2) { // signed, little endian
+			int offset = (index * 2);
+			return (((short) ((this.data[offset] & 0xff) | (this.data[offset + 1] << 8))) / 256.0);
+		}
+		return this.data[index];
+	}
+
 	protected void computeFFTParams() {
 		if (this.settings!=null) {
 
@@ -160,7 +176,7 @@ public class TGTuner extends Thread {
 					}
 					log++;
 				}
-				this.data = new byte[this.settings.getBufferSize()]; // data buffer
+				this.data = new byte[this.settings.getBufferSize() * this.getBytesPerSample()]; // data buffer
 				this.ar = new double[this.settings.getFFTSize()]; // create real array for FFT
 				this.ai = new double[this.settings.getFFTSize()]; // create imaginary array for FFT
 

@@ -31,7 +31,7 @@ public class TGTunerSettings {
 	public static TGTunerSettings getDefaults() {
 		TGTunerSettings retValue = new TGTunerSettings();
 		retValue.setSampleRate(11025);
-		retValue.setSampleSize(8);
+		retValue.setSampleSize(16);
 		retValue.setBufferSize(DEFAULT_BUFFER_SIZE);
 		retValue.setFFTSize(DEFAULT_FFT_SIZE);
 		retValue.setThreshold(0.03);
