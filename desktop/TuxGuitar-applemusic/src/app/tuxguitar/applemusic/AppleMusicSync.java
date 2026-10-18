@@ -181,7 +181,10 @@ public class AppleMusicSync implements TGEventListener {
 						AppleMusicSync.this.bridge.selectTrack(track);
 						AppleMusicSync.this.setStatus("loaded " + track);
 					} catch (Throwable throwable) {
-						AppleMusicSync.this.setStatus(String.valueOf(throwable.getMessage()));
+						// playing along with whatever happens to be loaded would be worse than
+						// not playing along at all: the score keeps its own sound instead
+						AppleMusicSync.this.settings.setEnabled(false);
+						AppleMusicSync.this.setStatus(throwable.getMessage() + " - synchronisation off");
 					}
 				}
 			}, "tuxguitar-apple-music-select");

@@ -72,11 +72,15 @@
   <b>Load a track of the library by name</b><code>tuxguitar://open?path=song.gp5&amp;music=My%20Song</code></a>
 <a class="link music" href="tuxguitar://open?path=song.gp5&amp;music">
   <b>Play along with the track Music has loaded</b><code>tuxguitar://open?path=song.gp5&amp;music</code></a>
+<a class="link music" href="tuxguitar:///Users/me/songs/song.gp5?music=My%20Song">
+  <b>A query on a plain path works too</b><code>tuxguitar:///Users/me/songs/song.gp5?music=My%20Song</code></a>
 <p class="note">
   The name is matched against the library, exactly first and as a part of a title otherwise, so
-  <code>music=Pretender</code> finds "Pretender" rather than "The Pretender". Press play in
-  TuxGuitar and the recording starts with it; the dialog under
-  <b>Tools &rsaquo; Apple Music sync</b> holds the offset, the speed and the drift between them.
+  <code>music=Pretender</code> finds "Pretender" rather than "The Pretender". A track that is
+  not in the library — one only ever streamed, for instance — switches the synchronisation off
+  rather than playing along with whatever Music happens to hold. Press play in TuxGuitar and the
+  recording starts with it; the dialog under <b>Tools &rsaquo; Apple Music sync</b> holds the
+  offset, the speed and the drift between them.
 </p>
 
 <h2>Build a link</h2>
