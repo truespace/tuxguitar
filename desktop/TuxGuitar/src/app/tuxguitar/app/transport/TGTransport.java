@@ -121,6 +121,21 @@ public class TGTransport {
 		}
 	}
 	private void play() {
+		// optional countdown over the score before playing; play again during it to cancel it
+		TGStartCountdown countdown = TGStartCountdown.getInstance(this.context);
+		if( countdown.isRunning() ) {
+			countdown.cancel();
+		} else if( countdown.isEnabled() ) {
+			countdown.start(new Runnable() {
+				public void run() {
+					TGTransport.this.startPlayback();
+				}
+			});
+		} else {
+			this.startPlayback();
+		}
+	}
+	private void startPlayback() {
 		MidiPlayer player = MidiPlayer.getInstance(this.context);
 		try{
 			gotoCaretPosition();
@@ -131,11 +146,13 @@ public class TGTransport {
 		}
 	}
 	private void pause() {
+		TGStartCountdown.getInstance(this.context).cancel();
 		MidiPlayer player = MidiPlayer.getInstance(this.context);
 		gotoPlayerPosition();
 		player.pause();
 	}
 	public void stop(){
+		TGStartCountdown.getInstance(this.context).cancel();
 		MidiPlayer player = MidiPlayer.getInstance(this.context);
 		if(player.isRunning()){
 			player.reset();

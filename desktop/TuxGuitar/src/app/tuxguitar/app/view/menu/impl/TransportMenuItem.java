@@ -1,12 +1,16 @@
 package app.tuxguitar.app.view.menu.impl;
 
 import app.tuxguitar.app.TuxGuitar;
+import app.tuxguitar.app.action.TGActionProcessorListener;
 import app.tuxguitar.app.action.impl.transport.TGOpenTransportModeDialogAction;
+import app.tuxguitar.app.action.impl.transport.TGSetStartCountdownSecondsAction;
+import app.tuxguitar.app.action.impl.transport.TGToggleStartCountdownAction;
 import app.tuxguitar.app.action.impl.transport.TGTransportPlayPauseAction;
 import app.tuxguitar.app.action.impl.transport.TGTransportSetLoopEHeaderAction;
 import app.tuxguitar.app.action.impl.transport.TGTransportSetLoopSHeaderAction;
 import app.tuxguitar.app.action.impl.transport.TGTransportStopAction;
 import app.tuxguitar.app.system.icons.TGIconManager;
+import app.tuxguitar.app.transport.TGStartCountdown;
 import app.tuxguitar.app.view.component.tab.Tablature;
 import app.tuxguitar.app.view.component.tab.TablatureEditor;
 import app.tuxguitar.editor.action.transport.TGTransportCountDownAction;
@@ -30,6 +34,9 @@ public class TransportMenuItem extends TGMenuItem {
 	private UIMenuActionItem stop;
 	private UIMenuCheckableItem metronome;
 	private UIMenuCheckableItem countDown;
+	private UIMenuCheckableItem startCountdown;
+	private UIMenuSubMenuItem startCountdownLength;
+	private UIMenuCheckableItem[] startCountdownSeconds;
 	private UIMenuActionItem mode;
 	private UIMenuCheckableItem loopSHeader;
 	private UIMenuCheckableItem loopEHeader;
@@ -61,6 +68,20 @@ public class TransportMenuItem extends TGMenuItem {
 		//--COUNTDOWN--
 		this.countDown = this.transportMenuItem.getMenu().createCheckItem();
 		this.countDown.addSelectionListener(this.createActionProcessor(TGTransportCountDownAction.NAME));
+
+		//--COUNTDOWN BEFORE PLAYING (seconds, shown over the score)--
+		this.startCountdown = this.transportMenuItem.getMenu().createCheckItem();
+		this.startCountdown.addSelectionListener(this.createActionProcessor(TGToggleStartCountdownAction.NAME));
+
+		this.startCountdownLength = this.transportMenuItem.getMenu().createSubMenuItem();
+		this.startCountdownSeconds = new UIMenuCheckableItem[TGStartCountdown.SECONDS_CHOICES.length];
+		for( int i = 0 ; i < TGStartCountdown.SECONDS_CHOICES.length ; i ++ ) {
+			TGActionProcessorListener processor = this.createActionProcessor(TGSetStartCountdownSecondsAction.NAME);
+			processor.setAttribute(TGSetStartCountdownSecondsAction.ATTRIBUTE_SECONDS, TGStartCountdown.SECONDS_CHOICES[i]);
+
+			this.startCountdownSeconds[i] = this.startCountdownLength.getMenu().createRadioItem();
+			this.startCountdownSeconds[i].addSelectionListener(processor);
+		}
 
 		//--MODE--
 		this.mode = this.transportMenuItem.getMenu().createActionItem();
@@ -98,6 +119,11 @@ public class TransportMenuItem extends TGMenuItem {
 		this.stop.setEnabled(running);
 		this.metronome.setChecked(TuxGuitar.getInstance().getPlayer().isMetronomeEnabled());
 		this.countDown.setChecked(TuxGuitar.getInstance().getPlayer().getCountDown().isEnabled());
+		TGStartCountdown startCountdown = TGStartCountdown.getInstance(this.findContext());
+		this.startCountdown.setChecked(startCountdown.isEnabled());
+		for( int i = 0 ; i < TGStartCountdown.SECONDS_CHOICES.length ; i ++ ) {
+			this.startCountdownSeconds[i].setChecked(startCountdown.getSeconds() == TGStartCountdown.SECONDS_CHOICES[i]);
+		}
 		this.loopSHeader.setEnabled( pm.isLoop() );
 		this.loopSHeader.setChecked( measure != null && measure.getNumber() == pm.getLoopSHeader() );
 		this.loopEHeader.setEnabled( pm.isLoop() );
@@ -118,6 +144,11 @@ public class TransportMenuItem extends TGMenuItem {
 		setMenuItemTextAndAccelerator(this.mode, "transport.mode", TGOpenTransportModeDialogAction.NAME);
 		setMenuItemTextAndAccelerator(this.metronome, "transport.metronome", TGTransportMetronomeAction.NAME);
 		setMenuItemTextAndAccelerator(this.countDown, "transport.count-down", TGTransportCountDownAction.NAME);
+		setMenuItemTextAndAccelerator(this.startCountdown, "transport.start-countdown", TGToggleStartCountdownAction.NAME);
+		setMenuItemTextAndAccelerator(this.startCountdownLength, "transport.start-countdown.length", null);
+		for( int i = 0 ; i < TGStartCountdown.SECONDS_CHOICES.length ; i ++ ) {
+			this.startCountdownSeconds[i].setText(TGStartCountdown.SECONDS_CHOICES[i] + " " + TuxGuitar.getProperty("transport.start-countdown.seconds"));
+		}
 		setMenuItemTextAndAccelerator(this.loopSHeader, "transport.set-loop-start", TGTransportSetLoopSHeaderAction.NAME);
 		setMenuItemTextAndAccelerator(this.loopEHeader, "transport.set-loop-end", TGTransportSetLoopEHeaderAction.NAME);
 		setMenuItemTextAndAccelerator(this.highlightPlayedBeat, "transport.highlight-played-beat", TGToggleHighlightPlayedBeatAction.NAME);

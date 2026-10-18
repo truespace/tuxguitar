@@ -4,6 +4,7 @@ import app.tuxguitar.app.TuxGuitar;
 import app.tuxguitar.app.system.config.TGConfigKeys;
 import app.tuxguitar.app.system.config.TGConfigManager;
 import app.tuxguitar.app.system.keybindings.KeyBindingActionManager;
+import app.tuxguitar.app.transport.TGStartCountdown;
 import app.tuxguitar.app.transport.TGTransport;
 import app.tuxguitar.app.ui.TGApplication;
 import app.tuxguitar.app.util.TGPlatformUtil;
@@ -21,6 +22,9 @@ import app.tuxguitar.ui.event.UIFocusGainedListener;
 import app.tuxguitar.ui.event.UISelectionEvent;
 import app.tuxguitar.ui.event.UISelectionListener;
 import app.tuxguitar.ui.layout.UITableLayout;
+import app.tuxguitar.ui.resource.UIColor;
+import app.tuxguitar.ui.resource.UIFont;
+import app.tuxguitar.ui.resource.UIFontModel;
 import app.tuxguitar.ui.resource.UIPainter;
 import app.tuxguitar.ui.resource.UIRectangle;
 import app.tuxguitar.ui.resource.UISize;
@@ -233,10 +237,46 @@ public class TGControl {
 			this.lastLayoutMode = this.tablature.getViewLayout().getMode();
 			this.wasPlaying = isPlaying;
 
+			this.paintStartCountdown(painter, canvasWidth, canvasHeight);
 		}catch(Throwable throwable){
 			throwable.printStackTrace();
 		}
 		this.painting = false;
+	}
+
+	/**
+	 * Countdown before playback (see TGStartCountdown), drawn over the middle of the score.
+	 */
+	private void paintStartCountdown(UIPainter painter, float width, float height) {
+		TGStartCountdown countdown = TGStartCountdown.getInstance(this.context);
+		if(!countdown.isRunning() || countdown.getRemaining() <= 0 ) {
+			return;
+		}
+		UIFactory factory = TGApplication.getInstance(this.context).getFactory();
+		float boxSize = Math.max(80f, Math.min(width, height) * 0.4f);
+		float x = ((width - boxSize) / 2f);
+		float y = ((height - boxSize) / 2f);
+		String text = Integer.toString(countdown.getRemaining());
+
+		UIColor background = factory.createColor(0, 0, 0);
+		UIColor foreground = factory.createColor(255, 255, 255);
+		UIFont font = factory.createFont(UIFontModel.DEFAULT_NAME, (boxSize * 0.5f), true, false);
+		try {
+			painter.setAlpha(170);
+			painter.setBackground(background);
+			painter.initPath(UIPainter.PATH_FILL);
+			painter.addRoundedRectangle(x, y, boxSize, boxSize, (boxSize * 0.18f));
+			painter.closePath();
+
+			painter.setAlpha(255);
+			painter.setFont(font);
+			painter.setForeground(foreground);
+			painter.drawString(text, ((width - painter.getFMWidth(text)) / 2f), ((height / 2f) + painter.getFMMiddleLine()));
+		} finally {
+			font.dispose();
+			background.dispose();
+			foreground.dispose();
+		}
 	}
 
 	private boolean anticipateScrolling(TGMeasureImpl playedMeasure, TGLayout layout) {

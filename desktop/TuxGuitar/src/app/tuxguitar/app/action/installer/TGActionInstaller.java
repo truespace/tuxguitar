@@ -130,6 +130,8 @@ import app.tuxguitar.app.action.impl.transport.TGTransportPlayPauseAction;
 import app.tuxguitar.app.action.impl.transport.TGTransportPlayStopAction;
 import app.tuxguitar.app.action.impl.transport.TGTransportSetLoopEHeaderAction;
 import app.tuxguitar.app.action.impl.transport.TGTransportSetLoopSHeaderAction;
+import app.tuxguitar.app.action.impl.transport.TGSetStartCountdownSecondsAction;
+import app.tuxguitar.app.action.impl.transport.TGToggleStartCountdownAction;
 import app.tuxguitar.app.action.impl.transport.TGTransportStopAction;
 import app.tuxguitar.app.action.impl.view.TGHideExternalBeatAction;
 import app.tuxguitar.app.action.impl.view.TGOpenMainToolBarSettingsDialogAction;
@@ -484,6 +486,8 @@ public class TGActionInstaller {
 		installAction(new TGTransportPlayPauseAction(context));
 		installAction(new TGTransportPlayStopAction(context));
 		installAction(new TGTransportStopAction(context));
+		installAction(new TGToggleStartCountdownAction(context));
+		installAction(new TGSetStartCountdownSecondsAction(context));
 		installAction(new TGTransportMetronomeAction(context));
 		installAction(new TGTransportCountDownAction(context));
 		installAction(new TGTransportModeAction(context));
