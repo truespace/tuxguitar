@@ -50,8 +50,13 @@ The recording is the master, and the score is moved onto it, because a cursor a 
 milliseconds off is not noticed while an interruption of the music is.
 
 Two settings line the two up: how much of the recording comes before the first measure, and
-how fast the recording runs compared to the tempo of the score. The dialog shows the drift
-that remains, so they can be dialled in while the score plays.
+how fast the recording runs compared to the tempo of the score. Rather than typing them, put
+the caret on a measure, scrub the recording in Music to the moment that measure is heard, and
+press one of the two anchor buttons: the first takes the offset from it, the second the speed.
+The dialog shows the drift that remains, so they can be checked while the score plays.
+
+While the recording plays, the instruments of the score are silenced, which is usually the
+point; the dialog has a switch for it.
 
 Measured on an M4 Mac mini, a recording streamed from Apple Music stayed within 35 to 45 ms of
 the score over a minute, without growing. What it cannot follow is a recording that does not

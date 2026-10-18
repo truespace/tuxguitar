@@ -1,14 +1,13 @@
 package app.tuxguitar.applemusic;
 
 import java.io.File;
-import java.util.Iterator;
 
-import app.tuxguitar.app.util.MidiTickUtil;
 import app.tuxguitar.document.TGDocumentManager;
 import app.tuxguitar.event.TGEvent;
 import app.tuxguitar.event.TGEventListener;
 import app.tuxguitar.player.base.MidiPlayer;
 import app.tuxguitar.player.base.MidiPlayerEvent;
+import app.tuxguitar.player.base.MidiRepeatController;
 import app.tuxguitar.song.models.TGDuration;
 import app.tuxguitar.song.models.TGMeasureHeader;
 import app.tuxguitar.song.models.TGSong;
@@ -27,8 +26,10 @@ public class AppleMusicSync implements TGEventListener {
 	// the Music app needs this long before it reports where it really is
 	private static final long SETTLE_TIME = 600;
 	private static final long CHECK_INTERVAL = 2000;
-	// a correction of the score position is only worth its jump beyond this
-	private static final long CORRECTION_THRESHOLD = 120;
+	// a correction of the score position is only worth its jump beyond this, and the reading
+	// right after one is of a score that is still being moved
+	private static final long CORRECTION_THRESHOLD = 300;
+	private static final long SETTLE_AFTER_CORRECTION = 3000;
 	private static final int READINGS = 3;
 
 	private final TGContext context;
@@ -40,13 +41,15 @@ public class AppleMusicSync implements TGEventListener {
 	private volatile boolean running;
 	private volatile String status;
 	private volatile long drift;
+	private long correctedAt;
+	private int savedVolume = -1;
 
 	public AppleMusicSync(TGContext context, File helper) {
 		this.context = context;
 		this.settings = new AppleMusicSettings(context);
 		this.bridge = new AppleMusicBridge();
 		this.helper = helper;
-		this.setStatus("");
+		this.status = "";
 	}
 
 	private void setStatus(String status) {
@@ -79,16 +82,52 @@ public class AppleMusicSync implements TGEventListener {
 		this.bridge.close();
 	}
 
+	/** length of the score at its written tempo, which the speed of the recording is read against */
+	public double getScoreDuration() {
+		return this.getScoreSeconds(Long.MAX_VALUE, 1.0);
+	}
+
+	/** where the recording is now, or -1 when it cannot be read */
+	public double getMusicPosition() {
+		try {
+			this.bridge.open(this.helper);
+
+			return this.bridge.getPosition().position;
+		} catch (Throwable throwable) {
+			this.setStatus(String.valueOf(throwable.getMessage()));
+
+			return -1;
+		}
+	}
+
+	/** length of the track loaded in the Music app, or 0 when it cannot be read */
+	public double getTrackDuration() {
+		try {
+			this.bridge.open(this.helper);
+
+			return this.bridge.getTrackDuration();
+		} catch (Throwable throwable) {
+			this.setStatus(String.valueOf(throwable.getMessage()));
+
+			return 0;
+		}
+	}
+
 	public String getTrackName() {
 		try {
 			this.bridge.open(this.helper);
 
 			return this.bridge.getTrackName();
 		} catch (Throwable throwable) {
-			this.setStatus(throwable.getMessage());
+			this.setStatus(String.valueOf(throwable.getMessage()));
 
 			return null;
 		}
+	}
+
+	/** seconds of score before the measure the caret sits in, used to line the two up */
+	public double getCaretSeconds(long measureStart) {
+		return this.getScoreSeconds(this.getPlayerTick(measureStart), 1.0);
 	}
 
 	public void processEvent(TGEvent event) {
@@ -109,6 +148,13 @@ public class AppleMusicSync implements TGEventListener {
 		}
 		this.stop();
 
+		// before anything is heard of it: the recording is what should be heard
+		if( this.settings.isMuteScore() ) {
+			MidiPlayer player = MidiPlayer.getInstance(this.context);
+			this.savedVolume = player.getVolume();
+			player.setVolume(0);
+		}
+
 		this.running = true;
 		this.thread = new Thread(new Runnable() {
 			public void run() {
@@ -124,11 +170,15 @@ public class AppleMusicSync implements TGEventListener {
 		this.running = false;
 		this.thread = null;
 
+		if( this.savedVolume >= 0 ) {
+			MidiPlayer.getInstance(this.context).setVolume(this.savedVolume);
+			this.savedVolume = -1;
+		}
 		if( wasRunning ) {
 			try {
 				this.bridge.pause();
 			} catch (Throwable throwable) {
-				this.setStatus(throwable.getMessage());
+				this.setStatus(String.valueOf(throwable.getMessage()));
 			}
 		}
 	}
@@ -140,6 +190,7 @@ public class AppleMusicSync implements TGEventListener {
 			double scoreSeconds = this.getScoreSeconds(this.getPlayerTick());
 			this.bridge.seek(this.toMusicSeconds(scoreSeconds));
 			this.bridge.play();
+			this.correctedAt = 0;
 			this.setStatus(String.format("started at %.2fs of the score", scoreSeconds));
 
 			Thread.sleep(SETTLE_TIME);
@@ -176,8 +227,7 @@ public class AppleMusicSync implements TGEventListener {
 			return;
 		}
 
-		long playerTick = this.getPlayerTick();
-		double scoreSeconds = this.getScoreSeconds(playerTick);
+		double scoreSeconds = this.getScoreSeconds(this.getPlayerTick());
 		// where the recording was when it was read, brought forward to now
 		double musicNow = (best.position + ((System.currentTimeMillis() - best.readAt) / 1000.0));
 		double expectedScoreSeconds = this.toScoreSeconds(musicNow);
@@ -186,13 +236,16 @@ public class AppleMusicSync implements TGEventListener {
 		this.setStatus(String.format("score %.2fs, recording %.2fs, drift %+d ms (read within %d ms)",
 			scoreSeconds, musicNow, Long.valueOf(this.drift), Long.valueOf(best.window)));
 
-		if( correctAnyway || Math.abs(this.drift) > CORRECTION_THRESHOLD ) {
+		boolean settled = ((System.currentTimeMillis() - this.correctedAt) > SETTLE_AFTER_CORRECTION);
+		if( correctAnyway || (settled && Math.abs(this.drift) > CORRECTION_THRESHOLD) ) {
 			this.setScoreSeconds(expectedScoreSeconds);
+			this.correctedAt = System.currentTimeMillis();
+			this.setStatus(String.format("moved the score to %.2fs", expectedScoreSeconds));
 		}
 	}
 
 	private long getPlayerTick() {
-		return MidiTickUtil.getStart(this.context, MidiPlayer.getInstance(this.context).getTickPosition());
+		return MidiPlayer.getInstance(this.context).getTickPosition();
 	}
 
 	/** recording position of a moment of the score */
@@ -205,51 +258,108 @@ public class AppleMusicSync implements TGEventListener {
 	}
 
 	/**
-	 * Seconds of score before a tick, following the tempo of every measure up to it. The playback
-	 * speed of the player is taken into account, so that practising slowly stays in sync.
+	 * Seconds of playback before a tick of the player, which plays a measure as often as the
+	 * repeats of the score ask for it, each at its own tempo. The speed the player is set to
+	 * counts as well: a recording cannot follow a score practised at half speed, and the drift
+	 * then says so rather than hiding it.
 	 */
-	private double getScoreSeconds(long tick) {
+	private double getScoreSeconds(long playerTick) {
+		return this.getScoreSeconds(playerTick, (MidiPlayer.getInstance(this.context).getMode().getCurrentPercent() / 100.0));
+	}
+
+	private double getScoreSeconds(long playerTick, double percent) {
 		TGSong song = TGDocumentManager.getInstance(this.context).getSong();
-		double percent = (MidiPlayer.getInstance(this.context).getMode().getCurrentPercent() / 100.0);
+		MidiPlayer player = MidiPlayer.getInstance(this.context);
+		MidiRepeatController controller = new MidiRepeatController(song, player.getLoopSHeader(), player.getLoopEHeader());
+		long start = this.getStartPoint();
+		long length = 0;
 		double seconds = 0;
 
-		Iterator<TGMeasureHeader> headers = song.getMeasureHeaders();
-		while( headers.hasNext() ) {
-			TGMeasureHeader header = headers.next();
-			double secondsPerTick = (60.0 / (header.getTempo().getQuarterValue() * percent) / TGDuration.QUARTER_TIME);
-			long length = header.getLength();
+		while(!controller.finished()) {
+			TGMeasureHeader header = song.getMeasureHeader(controller.getIndex());
+			controller.process();
 
-			if( tick >= (header.getStart() + length) ) {
+			if( controller.shouldPlay() ) {
+				start += length;
+				length = header.getLength();
+
+				double secondsPerTick = this.getSecondsPerTick(header, percent);
+				if( playerTick < (start + length) ) {
+					return (seconds + (Math.max(0, playerTick - start) * secondsPerTick));
+				}
 				seconds += (length * secondsPerTick);
-			} else {
-				seconds += (Math.max(0, tick - header.getStart()) * secondsPerTick);
-
-				return seconds;
 			}
 		}
 		return seconds;
 	}
 
-	/** moves the score playback to a moment given in seconds */
-	private void setScoreSeconds(double scoreSeconds) {
+	/** the tick of the player a moment of the score belongs to */
+	private long getPlayerTick(double scoreSeconds, double percent) {
 		TGSong song = TGDocumentManager.getInstance(this.context).getSong();
-		double percent = (MidiPlayer.getInstance(this.context).getMode().getCurrentPercent() / 100.0);
+		MidiPlayer player = MidiPlayer.getInstance(this.context);
+		MidiRepeatController controller = new MidiRepeatController(song, player.getLoopSHeader(), player.getLoopEHeader());
+		long start = this.getStartPoint();
+		long length = 0;
 		double seconds = 0;
 
-		Iterator<TGMeasureHeader> headers = song.getMeasureHeaders();
-		while( headers.hasNext() ) {
-			TGMeasureHeader header = headers.next();
-			double secondsPerTick = (60.0 / (header.getTempo().getQuarterValue() * percent) / TGDuration.QUARTER_TIME);
-			double measureSeconds = (header.getLength() * secondsPerTick);
+		while(!controller.finished()) {
+			TGMeasureHeader header = song.getMeasureHeader(controller.getIndex());
+			controller.process();
 
-			if( scoreSeconds < (seconds + measureSeconds) ) {
-				long start = (header.getStart() + Math.round((scoreSeconds - seconds) / secondsPerTick));
-				MidiPlayer.getInstance(this.context).setTickPosition(MidiTickUtil.getTick(this.context, start));
+			if( controller.shouldPlay() ) {
+				start += length;
+				length = header.getLength();
 
-				return;
+				double secondsPerTick = this.getSecondsPerTick(header, percent);
+				double measureSeconds = (length * secondsPerTick);
+				if( scoreSeconds < (seconds + measureSeconds) ) {
+					return (start + Math.round(Math.max(0, scoreSeconds - seconds) / secondsPerTick));
+				}
+				seconds += measureSeconds;
 			}
-			seconds += measureSeconds;
 		}
+		return (start + length);
 	}
 
+	/** the tick of the player a position of the score is first played at */
+	private long getPlayerTick(long measureStart) {
+		TGSong song = TGDocumentManager.getInstance(this.context).getSong();
+		MidiPlayer player = MidiPlayer.getInstance(this.context);
+		MidiRepeatController controller = new MidiRepeatController(song, player.getLoopSHeader(), player.getLoopEHeader());
+		long start = this.getStartPoint();
+		long length = 0;
+
+		while(!controller.finished()) {
+			TGMeasureHeader header = song.getMeasureHeader(controller.getIndex());
+			controller.process();
+
+			if( controller.shouldPlay() ) {
+				start += length;
+				length = header.getLength();
+
+				if( measureStart >= header.getStart() && measureStart < (header.getStart() + length) ) {
+					return (start + (measureStart - header.getStart()));
+				}
+			}
+		}
+		return start;
+	}
+
+	private double getSecondsPerTick(TGMeasureHeader header, double percent) {
+		return (60.0 / (header.getTempo().getQuarterValue() * percent) / TGDuration.QUARTER_TIME);
+	}
+
+	private long getStartPoint() {
+		MidiPlayer player = MidiPlayer.getInstance(this.context);
+		player.updateLoop(false);
+
+		return player.getLoopSPosition();
+	}
+
+	/** moves the score playback to a moment given in seconds */
+	private void setScoreSeconds(double scoreSeconds) {
+		double percent = (MidiPlayer.getInstance(this.context).getMode().getCurrentPercent() / 100.0);
+
+		MidiPlayer.getInstance(this.context).setTickPosition(this.getPlayerTick(scoreSeconds, percent));
+	}
 }

@@ -11,6 +11,7 @@ public class AppleMusicSettings {
 	public static final String KEY_ENABLED = "applemusic.enabled";
 	public static final String KEY_OFFSET = "applemusic.offset";
 	public static final String KEY_STRETCH = "applemusic.stretch";
+	public static final String KEY_MUTE_SCORE = "applemusic.mute-score";
 
 	// seconds of the recording before the first measure of the score
 	public static final int DEFAULT_OFFSET = 0;
@@ -24,6 +25,15 @@ public class AppleMusicSettings {
 
 	public AppleMusicSettings(TGContext context) {
 		this.context = context;
+	}
+
+	/** silence the instruments of the score while the recording plays, which is the point of it */
+	public boolean isMuteScore() {
+		return this.getConfig().getBooleanValue(KEY_MUTE_SCORE, true);
+	}
+
+	public void setMuteScore(boolean mute) {
+		this.getConfig().setValue(KEY_MUTE_SCORE, mute);
 	}
 
 	public boolean isEnabled() {

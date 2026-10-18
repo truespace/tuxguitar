@@ -99,6 +99,16 @@ public class AppleMusicBridge {
 		return answer.substring(6).trim();
 	}
 
+	/** length of the track loaded in the Music app, in seconds, or 0 when there is none */
+	public synchronized double getTrackDuration() throws IOException {
+		String answer = this.send("track");
+		int separator = answer.indexOf('|');
+		if(!answer.startsWith("track ") ) {
+			throw new IOException(answer);
+		}
+		return (separator > 6 ? Double.parseDouble(answer.substring(6, separator).trim()) : 0);
+	}
+
 	/** name of the track loaded in the Music app, or null when there is none */
 	public synchronized String getTrackName() throws IOException {
 		String answer = this.send("track");
