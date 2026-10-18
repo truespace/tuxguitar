@@ -4,6 +4,17 @@
 	<dict>
 		<key>NSMicrophoneUsageDescription</key>
 		<string>TuxGuitar needs the microphone for the instrument tuner.</string>
+		<key>CFBundleURLTypes</key>
+		<array>
+			<dict>
+				<key>CFBundleURLName</key>
+				<string>TuxGuitar File</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>tuxguitar</string>
+				</array>
+			</dict>
+		</array>
 		<key>CFBundleExecutable</key>
 		<string>tuxguitar.sh</string>
 		<key>CFBundleGetInfoString</key>

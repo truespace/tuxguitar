@@ -44,6 +44,9 @@ public class TGGluonLauncher {
 			if (lockFile.exists() && !lockFile.delete()) {
 				System.err.println("[TGGluonLauncher] could not delete " + lockFile);
 			}
+
+			// "tuxguitar:" links, which open a file of the Documents folder
+			TGGluonUrlScheme.install();
 		}
 
 		TGGluonLog.log("home=" + System.getProperty(TG_HOME_PATH) + " share=" + System.getProperty(TG_SHARE_PATH));

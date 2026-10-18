@@ -22,6 +22,8 @@ import app.tuxguitar.util.plugin.TGPluginException;
 public class OpenDocPlugin implements TGEarlyInitPlugin {
 
 	private OpenDocListener openDocListener;
+	// kept referenced: the delegate calls back into it
+	private OpenUrlHandler openUrlHandler;
 
 	@Override
 	public String getModuleId() {
@@ -31,6 +33,12 @@ public class OpenDocPlugin implements TGEarlyInitPlugin {
 	@Override
 	public void earlyInit(TGContext context) throws TGPluginException {
 		this.openDocListener = new OpenDocListener(context);
+		try {
+			// "tuxguitar:" links, which open a file from a web page or any other application
+			this.openUrlHandler = new OpenUrlHandler(this.openDocListener);
+		} catch (Throwable throwable) {
+			throwable.printStackTrace();
+		}
 	}
 
 	@Override

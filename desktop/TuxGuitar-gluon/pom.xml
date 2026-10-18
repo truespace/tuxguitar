@@ -155,7 +155,10 @@
 									<arg line="--sdk ${gluon.native.sdk} clang -arch arm64 ${gluon.native.min.version} -O2 -c ${basedir}/src/native/tgaudio.m -o ${project.build.directory}/native/tgaudio.o" />
 								</exec>
 								<exec executable="xcrun" failonerror="true">
-									<arg line="--sdk ${gluon.native.sdk} libtool -static -o ${project.build.directory}/native/libtgaudio.a ${project.build.directory}/native/tgaudio.o" />
+									<arg line="--sdk ${gluon.native.sdk} clang -arch arm64 ${gluon.native.min.version} -O2 -fobjc-arc -c ${basedir}/src/native/tgurl.m -o ${project.build.directory}/native/tgurl.o" />
+								</exec>
+								<exec executable="xcrun" failonerror="true">
+									<arg line="--sdk ${gluon.native.sdk} libtool -static -o ${project.build.directory}/native/libtgaudio.a ${project.build.directory}/native/tgaudio.o ${project.build.directory}/native/tgurl.o" />
 								</exec>
 							</target>
 						</configuration>

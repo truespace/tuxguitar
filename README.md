@@ -24,6 +24,24 @@ devices are not part of the build.
 There is no ready made package: build and sign it yourself with an Apple developer
 account, as described in [INSTALL.md](INSTALL.md#build-for-ipados--ios-experimental).
 
+### Opening a file from a link
+
+Both this iOS build and the macOS build register the `tuxguitar:` URL scheme, so a link on a
+web page (or in any other application) can open a song in TuxGuitar:
+
+```html
+<a href="tuxguitar://open?path=songs/song.gp5">Open in TuxGuitar</a>
+<a href="tuxguitar:///Users/someone/songs/song.gp5">Open in TuxGuitar</a>
+```
+
+A relative path is resolved against the Documents folder of the app on iOS (the folder the
+Files app shows as "On My iPad / TuxGuitar"), and against the home folder on macOS. If
+TuxGuitar is already running, the file is opened in a new tab.
+
+On macOS the app reads the file with the permissions it was granted: a build that is not
+signed and not listed under Privacy & Security cannot read the Documents, Desktop or
+Downloads folders, and opening a file from there fails with "Operation not permitted".
+
 ## Contribute
 
 If you want to contribute to TuxGuitar, you will find a helpful description in the [CONTRIBUTING.md](docs/CONTRIBUTING.md) file.

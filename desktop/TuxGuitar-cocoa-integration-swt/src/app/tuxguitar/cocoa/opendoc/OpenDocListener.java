@@ -1,7 +1,8 @@
 package app.tuxguitar.cocoa.opendoc;
 
 
-/* Register a listener to receive OpenDocument events from SWT
+/* Register a listener to receive OpenDocument events from SWT, and open the files of the
+ * "tuxguitar:" links OpenUrlHandler receives
  * When an event is caught, need to wait for TuxGuitar to be ready before launching open document action:
  * - wait for all other plugins to be initialized (many file importers are plugins)
  * - at application start, wait for default song to be created, or else 2 tabs are open when double-clicking 1 single file
@@ -17,6 +18,7 @@ package app.tuxguitar.cocoa.opendoc;
  */
 
 import java.io.File;
+import java.net.URL;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -28,6 +30,7 @@ import app.tuxguitar.action.TGActionManager;
 import app.tuxguitar.app.TuxGuitar;
 import app.tuxguitar.app.action.impl.file.TGReadURLAction;
 import app.tuxguitar.app.document.TGDocumentListAttributes;
+import app.tuxguitar.app.util.TGSchemeUrl;
 import app.tuxguitar.editor.action.TGActionProcessor;
 import app.tuxguitar.editor.action.file.TGLoadTemplateAction;
 import app.tuxguitar.util.TGContext;
@@ -58,6 +61,17 @@ public class OpenDocListener implements Listener, TGActionInterceptor {
 
 	public void disconnect() {
 		this.enabled = false;
+		this.removeListeners();
+	}
+
+	// TuxGuitar was launched with an argument: no OpenDocument event will ever be received, but
+	// "tuxguitar:" links are still delivered to the running application, and can be processed at once
+	private void disconnectOpenDocument() {
+		this.enabled = true;
+		this.removeListeners();
+	}
+
+	private void removeListeners() {
 		TGSynchronizer.getInstance(this.context).executeLater(new Runnable() {
 			// need to executeLater for 2 reasons:
 			// - remove swt event listener: shall be done from UI thread
@@ -78,8 +92,8 @@ public class OpenDocListener implements Listener, TGActionInterceptor {
 	public boolean intercept(String id, TGActionContext actionContext) throws TGActionException {
 		boolean handled = false;
 		if (id.equals(TGReadURLAction.NAME)) {
-			// TuxGuitar was launched with an argument. SWT events will never be received
-			disconnect();
+			// TuxGuitar was launched with an argument. OpenDocument events will never be received
+			disconnectOpenDocument();
 			// and let action be processed normally
 		}
 		else if (id.equals(TGLoadTemplateAction.NAME)) {
@@ -113,6 +127,24 @@ public class OpenDocListener implements Listener, TGActionInterceptor {
 		}
 	}
 
+	// OpenDocument carries a file path, OpenUrl a "tuxguitar:" link
+	private URL toUrl(String text) throws Exception {
+		if( TGSchemeUrl.isSchemeUrl(text) ) {
+			return TGSchemeUrl.toFileUrl(text, new File(System.getProperty("user.home")));
+		}
+		return new File(text).toURI().toURL();
+	}
+
+	// receive a "tuxguitar:" link from OpenUrlHandler, which runs on the UI thread as well
+	public void handleUrl(String text) {
+		synchronized (this.getClass()) {
+			this.eventsText.add(text);
+		}
+		if (this.enabled) {
+			this.processEvents();
+		}
+	}
+
 	// process events: launch open document action(s)
 	private void processEvents() {
 		this.enabled = true;
@@ -123,8 +155,11 @@ public class OpenDocListener implements Listener, TGActionInterceptor {
 			while (!this.eventsText.isEmpty()) {
 				try {
 					TGActionProcessor tgActionProcessor = new TGActionProcessor(this.context, TGReadURLAction.NAME);
-					tgActionProcessor.setAttribute(TGReadURLAction.ATTRIBUTE_URL, new File(this.eventsText.get(0)).toURI().toURL());
-					tgActionProcessor.process();
+					URL url = this.toUrl(this.eventsText.get(0));
+					if( url != null ) {
+						tgActionProcessor.setAttribute(TGReadURLAction.ATTRIBUTE_URL, url);
+						tgActionProcessor.process();
+					}
 				} catch (Throwable throwable) {
 					TGErrorManager.getInstance(context).handleError(throwable);
 				}
