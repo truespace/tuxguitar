@@ -48,6 +48,9 @@ On macOS a link can bring the recording along, which is what makes a page of son
 `music` switches Apple Music sync on and silences the score, since the recording is what the
 link is for; naming a track loads it from the library first.
 
+[docs/url-scheme.html](docs/url-scheme.html) lists the forms of such a link and builds one from
+a path and a track name, with the escaping taken care of; open it in a browser.
+
 On macOS the app reads the file with the permissions it was granted: a build that is not
 signed and not listed under Privacy & Security cannot read the Documents, Desktop or
 Downloads folders, and opening a file from there fails with "Operation not permitted".

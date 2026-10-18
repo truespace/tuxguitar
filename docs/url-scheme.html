@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TuxGuitar links</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+         margin: 0 auto; padding: 24px 16px 64px; max-width: 760px; }
+  h1 { font-size: 24px; margin-bottom: 4px; }
+  h2 { font-size: 18px; margin-top: 36px; border-bottom: 1px solid #8884; padding-bottom: 6px; }
+  p.lead { color: #777; margin-top: 0; }
+  a.link { display: block; margin: 10px 0; padding: 13px 16px; border: 1px solid #8886;
+           border-radius: 10px; text-decoration: none; }
+  a.link b { display: block; font-weight: 600; }
+  a.link code { display: block; margin-top: 4px; font-size: 13px; color: #888;
+                word-break: break-all; }
+  a.music { border-color: #d0700a99; }
+  code { font-family: ui-monospace, Menlo, Consolas, monospace; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; margin-top: 8px; }
+  th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid #8883; vertical-align: top; }
+  th { color: #888; font-weight: 600; width: 6em; }
+  .note { color: #777; font-size: 15px; }
+  .builder { border: 1px solid #8886; border-radius: 10px; padding: 16px; margin-top: 12px; }
+  .builder label { display: block; font-size: 14px; color: #888; margin-top: 10px; }
+  .builder input { width: 100%; box-sizing: border-box; padding: 9px 10px; font-size: 16px;
+                   border: 1px solid #8886; border-radius: 7px; background: transparent;
+                   color: inherit; font-family: inherit; }
+  .builder output { display: block; margin-top: 14px; padding: 11px 12px; border-radius: 7px;
+                    background: #8881; font-family: ui-monospace, Menlo, Consolas, monospace;
+                    font-size: 13px; word-break: break-all; }
+  .builder a.open { display: inline-block; margin-top: 12px; padding: 10px 18px;
+                    border-radius: 8px; background: #0a62d0; color: #fff; text-decoration: none; }
+</style>
+</head>
+<body>
+
+<h1>TuxGuitar links</h1>
+<p class="lead">
+  A <code>tuxguitar:</code> link opens a song from a web page, and on macOS brings its
+  recording along. Open this file in a browser to build one, or copy the examples into a page
+  of your own.
+</p>
+
+<h2>Parameters</h2>
+<table>
+  <tr><th>path</th><td>The file to open. Relative to the Documents folder of the app on iPadOS
+    (what the Files app shows as <b>On My iPad / TuxGuitar</b>) and to the home folder on macOS;
+    an absolute path works as well.</td></tr>
+  <tr><th>music</th><td><b>macOS only.</b> Switches Apple Music sync on and silences the score,
+    since the recording is what the link is for. Give it the name of a track to load it from the
+    library; written on its own, it plays along with whatever Music already has loaded.</td></tr>
+</table>
+<p class="note">
+  A value containing spaces or non-latin characters has to be percent encoded
+  (a space becomes <code>%20</code>). The builder below does that for you.
+</p>
+
+<h2>Opening a score — iPadOS and macOS</h2>
+<a class="link" href="tuxguitar://open?path=song.gp5">
+  <b>A file in the folder of the app</b><code>tuxguitar://open?path=song.gp5</code></a>
+<a class="link" href="tuxguitar://song.gp5">
+  <b>The same, written short</b><code>tuxguitar://song.gp5</code></a>
+<a class="link" href="tuxguitar://open?path=songs/My%20Song.gp5">
+  <b>A subfolder, and a space in the name</b><code>tuxguitar://open?path=songs/My%20Song.gp5</code></a>
+<a class="link" href="tuxguitar:///Users/me/songs/song.gp5">
+  <b>An absolute path</b><code>tuxguitar:///Users/me/songs/song.gp5</code></a>
+
+<h2>Opening a score with its recording — macOS only</h2>
+<a class="link music" href="tuxguitar://open?path=song.gp5&amp;music=My%20Song">
+  <b>Load a track of the library by name</b><code>tuxguitar://open?path=song.gp5&amp;music=My%20Song</code></a>
+<a class="link music" href="tuxguitar://open?path=song.gp5&amp;music">
+  <b>Play along with the track Music has loaded</b><code>tuxguitar://open?path=song.gp5&amp;music</code></a>
+<p class="note">
+  The name is matched against the library, exactly first and as a part of a title otherwise, so
+  <code>music=Pretender</code> finds "Pretender" rather than "The Pretender". Press play in
+  TuxGuitar and the recording starts with it; the dialog under
+  <b>Tools &rsaquo; Apple Music sync</b> holds the offset, the speed and the drift between them.
+</p>
+
+<h2>Build a link</h2>
+<div class="builder">
+  <label for="path">Path of the file</label>
+  <input id="path" value="song.gp5" spellcheck="false" autocapitalize="off">
+  <label for="music">Track in Music — leave empty for the score alone, <code>*</code> for the loaded track</label>
+  <input id="music" value="" spellcheck="false" autocapitalize="off">
+  <output id="url"></output>
+  <a class="open" id="go" href="#">Open this link</a>
+</div>
+
+<script>
+  const path = document.getElementById("path");
+  const music = document.getElementById("music");
+  const url = document.getElementById("url");
+  const go = document.getElementById("go");
+
+  function build() {
+    let link = "tuxguitar://open?path=" + encodeURIComponent(path.value.trim());
+    const name = music.value.trim();
+    if (name === "*") {
+      link += "&music";
+    } else if (name.length > 0) {
+      link += "&music=" + encodeURIComponent(name);
+    }
+    url.textContent = link;
+    go.href = link;
+  }
+
+  path.addEventListener("input", build);
+  music.addEventListener("input", build);
+  build();
+</script>
+
+</body>
+</html>
