@@ -19,6 +19,11 @@ mvn -e clean verify -P native-modules
 # Bundle one as the release script does (misc/build_tuxguitar_from_source.sh); SWT jar arch must match (aarch64 on Apple Silicon):
 jlink --add-modules java.desktop --output target/tuxguitar-9.99-SNAPSHOT-macosx-swt-cocoa.app/Contents/MacOS/jre
 
+# Sign it, or macOS refuses every permission (microphone, Documents, Apple events) without asking.
+# The script moves the runtime to Contents/runtime first, which is what lets codesign accept it:
+desktop/build-scripts/macosx-sign-app.sh
+# Re-run it after changing anything inside the bundle; TG_SIGN_IDENTITY picks a Developer ID.
+
 # Linux: tuxguitar-linux-swt (or -swt-deb); Windows is cross-built from Linux:
 cd desktop/build-scripts/tuxguitar-windows-swt-x86_64
 mvn -e clean verify -P native-modules -P -platform-linux -P platform-windows

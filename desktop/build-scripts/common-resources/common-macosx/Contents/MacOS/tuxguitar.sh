@@ -13,7 +13,15 @@ TG_DIR=`dirname "$0"`
 TG_DIR=`cd "$TG_DIR"; pwd`
 cd "${TG_DIR}"
 ##JAVA
-JAVA="./jre/bin/java"
+# a runtime inside Contents/MacOS is what the release tarballs carry, while codesign reads it as
+# nested code and refuses the bundle: a signed build keeps it in Contents/runtime instead
+if [ -x "./jre/bin/java" ]; then
+	JAVA="./jre/bin/java"
+elif [ -x "../runtime/jre/bin/java" ]; then
+	JAVA="../runtime/jre/bin/java"
+else
+	JAVA="java"
+fi
 ##LIBRARY_PATH
 LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${TG_DIR}/lib/
 ##CLASSPATH

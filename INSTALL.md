@@ -161,6 +161,28 @@ $ cd -
 
 The application is now located in the `desktop/build-scripts/tuxguitar-macosx-swt-cocoa/target/tuxguitar-9.99-SNAPSHOT-macosx-swt-cocoa.app` folder. Start TuxGuitar by double-clicking on the folder.
 
+### Bundle a runtime and sign the app
+
+The launcher runs `jre/bin/java` inside the bundle, which the Maven build does not create.
+Create one, and sign the bundle:
+
+```sh
+$ APP=desktop/build-scripts/tuxguitar-macosx-swt-cocoa/target/tuxguitar-9.99-SNAPSHOT-macosx-swt-cocoa.app
+$ jlink --add-modules java.desktop --output $APP/Contents/MacOS/jre
+$ desktop/build-scripts/macosx-sign-app.sh $APP
+```
+
+Signing matters beyond Gatekeeper: macOS refuses an unsigned bundle the microphone (so the
+tuner records silence), the Documents, Desktop and Downloads folders, and permission to
+control other applications (Apple Music sync) — and it refuses them without ever asking.
+A signed bundle is asked about on first use.
+
+The script signs ad hoc, which holds on the machine that built it; set `TG_SIGN_IDENTITY` to a
+Developer ID to sign for other machines. It first moves the runtime to `Contents/runtime`,
+because `codesign` reads a runtime inside `Contents/MacOS` as nested code and rejects the
+bundle; the launcher looks in both places. Any change inside the bundle, such as dropping in a
+rebuilt plugin, breaks the signature, so run the script again afterwards.
+
 ## Build for iPadOS / iOS (experimental)
 
 This fork can build TuxGuitar as a native iOS app, running the JavaFX user interface
