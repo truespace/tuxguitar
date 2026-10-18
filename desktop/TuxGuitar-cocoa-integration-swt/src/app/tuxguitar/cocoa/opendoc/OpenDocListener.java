@@ -31,6 +31,8 @@ import app.tuxguitar.app.TuxGuitar;
 import app.tuxguitar.app.action.impl.file.TGReadURLAction;
 import app.tuxguitar.app.document.TGDocumentListAttributes;
 import app.tuxguitar.app.util.TGSchemeUrl;
+import app.tuxguitar.event.TGEvent;
+import app.tuxguitar.event.TGEventManager;
 import app.tuxguitar.editor.action.TGActionProcessor;
 import app.tuxguitar.editor.action.file.TGLoadTemplateAction;
 import app.tuxguitar.util.TGContext;
@@ -145,6 +147,14 @@ public class OpenDocListener implements Listener, TGActionInterceptor {
 		}
 	}
 
+	private void fireSchemeUrl(String text) {
+		if( TGSchemeUrl.isSchemeUrl(text) ) {
+			TGEvent event = new TGEvent(TGSchemeUrl.EVENT_TYPE);
+			event.setAttribute(TGSchemeUrl.PROPERTY_URL, text);
+			TGEventManager.getInstance(this.context).fireEvent(event);
+		}
+	}
+
 	// process events: launch open document action(s)
 	private void processEvents() {
 		this.enabled = true;
@@ -155,8 +165,15 @@ public class OpenDocListener implements Listener, TGActionInterceptor {
 			while (!this.eventsText.isEmpty()) {
 				try {
 					TGActionProcessor tgActionProcessor = new TGActionProcessor(this.context, TGReadURLAction.NAME);
-					URL url = this.toUrl(this.eventsText.get(0));
+					final String text = this.eventsText.get(0);
+					URL url = this.toUrl(text);
 					if( url != null ) {
+						// whoever reads the parameters of the link acts once the file is open
+						tgActionProcessor.setOnFinish(new Runnable() {
+							public void run() {
+								OpenDocListener.this.fireSchemeUrl(text);
+							}
+						});
 						tgActionProcessor.setAttribute(TGReadURLAction.ATTRIBUTE_URL, url);
 						tgActionProcessor.process();
 					}

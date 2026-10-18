@@ -119,6 +119,11 @@ public class AppleMusicBridge {
 		return (separator > 0 ? answer.substring(separator + 1) : null);
 	}
 
+	/** loads the track of the library whose name contains this, and pauses it at its start */
+	public synchronized void selectTrack(String name) throws IOException {
+		this.check(this.send("select " + name.replace('\n', ' ')));
+	}
+
 	public synchronized void seek(double seconds) throws IOException {
 		this.check(this.send("seek " + Math.max(0, seconds)));
 	}

@@ -38,6 +38,16 @@ A relative path is resolved against the Documents folder of the app on iOS (the 
 Files app shows as "On My iPad / TuxGuitar"), and against the home folder on macOS. If
 TuxGuitar is already running, the file is opened in a new tab.
 
+On macOS a link can bring the recording along, which is what makes a page of songs useful:
+
+```html
+<a href="tuxguitar://open?path=Pretender.gp5&music=Pretender">Open with the recording</a>
+<a href="tuxguitar://open?path=Pretender.gp5&music">Open with whatever Music has loaded</a>
+```
+
+`music` switches Apple Music sync on and silences the score, since the recording is what the
+link is for; naming a track loads it from the library first.
+
 On macOS the app reads the file with the permissions it was granted: a build that is not
 signed and not listed under Privacy & Security cannot read the Documents, Desktop or
 Downloads folders, and opening a file from there fails with "Operation not permitted".

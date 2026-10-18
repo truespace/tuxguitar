@@ -2,9 +2,11 @@ package app.tuxguitar.applemusic;
 
 import java.io.File;
 
+import app.tuxguitar.app.util.TGSchemeUrl;
 import app.tuxguitar.document.TGDocumentManager;
 import app.tuxguitar.event.TGEvent;
 import app.tuxguitar.event.TGEventListener;
+import app.tuxguitar.event.TGEventManager;
 import app.tuxguitar.player.base.MidiPlayer;
 import app.tuxguitar.player.base.MidiPlayerEvent;
 import app.tuxguitar.player.base.MidiRepeatController;
@@ -31,6 +33,7 @@ public class AppleMusicSync implements TGEventListener {
 	private static final long CORRECTION_THRESHOLD = 300;
 	private static final long SETTLE_AFTER_CORRECTION = 3000;
 	private static final int READINGS = 3;
+	private static final String PARAMETER_MUSIC = "music";
 
 	private final TGContext context;
 	private final AppleMusicSettings settings;
@@ -74,10 +77,12 @@ public class AppleMusicSync implements TGEventListener {
 
 	public void connect() {
 		MidiPlayer.getInstance(this.context).addListener(this);
+		TGEventManager.getInstance(this.context).addListener(TGSchemeUrl.EVENT_TYPE, this);
 	}
 
 	public void disconnect() {
 		MidiPlayer.getInstance(this.context).removeListener(this);
+		TGEventManager.getInstance(this.context).removeListener(TGSchemeUrl.EVENT_TYPE, this);
 		this.stop();
 		this.bridge.close();
 	}
@@ -131,6 +136,9 @@ public class AppleMusicSync implements TGEventListener {
 	}
 
 	public void processEvent(TGEvent event) {
+		if( TGSchemeUrl.EVENT_TYPE.equals(event.getEventType()) ) {
+			this.processSchemeUrl((String) event.getAttribute(TGSchemeUrl.PROPERTY_URL));
+		}
 		if( MidiPlayerEvent.EVENT_TYPE.equals(event.getEventType()) ) {
 			Integer type = event.getAttribute(MidiPlayerEvent.PROPERTY_NOTIFICATION_TYPE);
 			if( type != null && type.intValue() == MidiPlayerEvent.NOTIFY_STARTED ) {
@@ -139,6 +147,46 @@ public class AppleMusicSync implements TGEventListener {
 			if( type != null && type.intValue() == MidiPlayerEvent.NOTIFY_STOPPED ) {
 				this.stop();
 			}
+		}
+	}
+
+	/**
+	 * A "tuxguitar:" link may ask for the recording along with the score, and name the track it
+	 * means: tuxguitar://open?path=song.gp5&music=Pretender. Opened that way the score is
+	 * silenced, since the recording is what the link is for.
+	 */
+	private void processSchemeUrl(String text) {
+		final String track;
+		try {
+			track = (text != null ? TGSchemeUrl.getParameter(text, PARAMETER_MUSIC) : null);
+		} catch (Throwable throwable) {
+			this.setStatus(String.valueOf(throwable.getMessage()));
+
+			return;
+		}
+		if( track == null ) {
+			return;
+		}
+
+		this.settings.setEnabled(true);
+		this.settings.setMuteScore(true);
+		this.setStatus(track.length() > 0 ? ("loading " + track) : "playing along with the current track");
+
+		if( track.length() > 0 ) {
+			// loading a track takes about a second, which the user interface should not wait for
+			Thread thread = new Thread(new Runnable() {
+				public void run() {
+					try {
+						AppleMusicSync.this.bridge.open(AppleMusicSync.this.helper);
+						AppleMusicSync.this.bridge.selectTrack(track);
+						AppleMusicSync.this.setStatus("loaded " + track);
+					} catch (Throwable throwable) {
+						AppleMusicSync.this.setStatus(String.valueOf(throwable.getMessage()));
+					}
+				}
+			}, "tuxguitar-apple-music-select");
+			thread.setDaemon(true);
+			thread.start();
 		}
 	}
 

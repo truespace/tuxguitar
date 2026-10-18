@@ -22,6 +22,10 @@ public class TGSchemeUrl {
 
 	public static final String SCHEME = "tuxguitar";
 
+	/** fired with the link itself once it has been opened, for whoever reads its parameters */
+	public static final String EVENT_TYPE = "tuxguitar-scheme-url";
+	public static final String PROPERTY_URL = "url";
+
 	private static final String SCHEME_PREFIX = (SCHEME + ":");
 	private static final String PATH_PARAMETER = "path";
 	private static final String ENCODING = "UTF-8";
@@ -50,8 +54,13 @@ public class TGSchemeUrl {
 		return file.toURI().toURL();
 	}
 
+	/** value of a parameter of the link, "" when it carries no value, null when it is absent */
+	public static String getParameter(String text, String name) throws URISyntaxException, UnsupportedEncodingException {
+		return findParameter(new URI(text).getRawQuery(), name);
+	}
+
 	private static String findPath(URI uri) throws UnsupportedEncodingException {
-		String parameter = findPathParameter(uri.getRawQuery());
+		String parameter = findParameter(uri.getRawQuery(), PATH_PARAMETER);
 		if( parameter != null ) {
 			return parameter;
 		}
@@ -70,12 +79,15 @@ public class TGSchemeUrl {
 		return uri.getSchemeSpecificPart();
 	}
 
-	private static String findPathParameter(String query) throws UnsupportedEncodingException {
+	private static String findParameter(String query, String name) throws UnsupportedEncodingException {
 		if( query != null ) {
 			String[] parameters = query.split("&");
 			for(int i = 0; i < parameters.length; i ++) {
 				int separator = parameters[i].indexOf('=');
-				if( separator > 0 && PATH_PARAMETER.equals(parameters[i].substring(0, separator)) ) {
+				if( separator < 0 && name.equals(parameters[i]) ) {
+					return "";
+				}
+				if( separator > 0 && name.equals(parameters[i].substring(0, separator)) ) {
 					return URLDecoder.decode(parameters[i].substring(separator + 1), ENCODING);
 				}
 			}
