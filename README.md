@@ -42,6 +42,24 @@ On macOS the app reads the file with the permissions it was granted: a build tha
 signed and not listed under Privacy & Security cannot read the Documents, Desktop or
 Downloads folders, and opening a file from there fails with "Operation not permitted".
 
+## Playing along with a recording (macOS, experimental)
+
+The `tuxguitar-applemusic` plugin plays the recording loaded in the Music app along with the
+score: pick the song in Music, open **Tools > Apple Music sync**, switch it on, and press play.
+The recording is the master, and the score is moved onto it, because a cursor a few
+milliseconds off is not noticed while an interruption of the music is.
+
+Two settings line the two up: how much of the recording comes before the first measure, and
+how fast the recording runs compared to the tempo of the score. The dialog shows the drift
+that remains, so they can be dialled in while the score plays.
+
+Measured on an M4 Mac mini, a recording streamed from Apple Music stayed within 35 to 45 ms of
+the score over a minute, without growing. What it cannot follow is a recording that does not
+keep a steady tempo: it has no beat map, only an offset and a speed.
+
+The plugin needs permission to control the Music app, which macOS only asks for when the
+application bundle is signed (see INSTALL.md): an unsigned build is refused without a prompt.
+
 ## Contribute
 
 If you want to contribute to TuxGuitar, you will find a helpful description in the [CONTRIBUTING.md](docs/CONTRIBUTING.md) file.

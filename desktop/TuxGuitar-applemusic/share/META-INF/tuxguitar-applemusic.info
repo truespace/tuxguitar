@@ -1,0 +1,5 @@
+### Plugin Information ###
+plugin.name=Apple Music sync
+plugin.description=Plays the recording loaded in the Music app of macOS along with the score,\nkeeping the playback position of both in step.
+plugin.author=TuxGuitar iPad port fork
+plugin.version=0.1

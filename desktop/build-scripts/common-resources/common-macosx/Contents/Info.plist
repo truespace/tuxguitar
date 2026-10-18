@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 	<dict>
+		<key>NSAppleEventsUsageDescription</key>
+		<string>TuxGuitar controls the Music app to play a recording along with the score.</string>
 		<key>NSMicrophoneUsageDescription</key>
 		<string>TuxGuitar needs the microphone for the instrument tuner.</string>
 		<key>CFBundleURLTypes</key>
