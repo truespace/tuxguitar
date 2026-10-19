@@ -18,12 +18,17 @@ public class AppleMusicBridge {
 
 	public static final String HELPER_NAME = "tuxguitar-music-helper";
 	private static final String ENCODING = "UTF-8";
-	// the very first command may wait for the user to allow TuxGuitar to control the Music app
-	private static final long TIMEOUT = 60000;
+	// the very first command waits for the user to allow TuxGuitar to control the Music app;
+	// afterwards an answer that does not come quickly means the helper is stuck, and holding the
+	// bridge any longer would hold up whoever closes it
+	private static final long FIRST_TIMEOUT = 60000;
+	private static final long TIMEOUT = 5000;
 
 	private Process process;
 	private BufferedWriter output;
 	private BufferedReader input;
+	private boolean answered;
+	private volatile boolean closed;
 
 	/** position of the Music app, with the window in which it was read */
 	public static class Reading {
@@ -51,25 +56,38 @@ public class AppleMusicBridge {
 		ProcessBuilder builder = new ProcessBuilder(helper.getAbsolutePath());
 		builder.redirectErrorStream(false);
 
+		this.closed = false;
+		this.answered = false;
 		this.process = builder.start();
 		this.output = new BufferedWriter(new OutputStreamWriter(this.process.getOutputStream(), ENCODING));
 		this.input = new BufferedReader(new InputStreamReader(this.process.getInputStream(), ENCODING));
 	}
 
-	public synchronized void close() {
-		if( this.process != null ) {
+	/**
+	 * Ends the helper without waiting for anything: this runs while the application is closing,
+	 * where another thread may still be waiting for an answer, and must not queue behind it.
+	 */
+	public void close() {
+		this.closed = true;
+
+		Process process = this.process;
+		if( process != null ) {
 			try {
-				this.send("quit");
-			} catch (IOException ignored) {
+				// best effort, the helper ends on this; destroy() settles it either way
+				this.output.write("quit\n");
+				this.output.flush();
+			} catch (Throwable ignored) {
 				// the helper is going away in any case
 			}
-			this.destroy();
+			process.destroy();
+			this.process = null;
 		}
 	}
 
 	private void destroy() {
-		if( this.process != null ) {
-			this.process.destroy();
+		Process process = this.process;
+		if( process != null ) {
+			process.destroy();
 			this.process = null;
 			this.input = null;
 			this.output = null;
@@ -143,7 +161,7 @@ public class AppleMusicBridge {
 	}
 
 	private String send(String command) throws IOException {
-		if(!this.isOpen() ) {
+		if( this.closed || !this.isOpen() ) {
 			throw new IOException("the helper is not running");
 		}
 
@@ -151,8 +169,11 @@ public class AppleMusicBridge {
 		this.output.write("\n");
 		this.output.flush();
 
-		long deadline = (System.currentTimeMillis() + TIMEOUT);
+		long deadline = (System.currentTimeMillis() + (this.answered ? TIMEOUT : FIRST_TIMEOUT));
 		while(!this.input.ready() ) {
+			if( this.closed ) {
+				throw new IOException("the helper was closed");
+			}
 			if( System.currentTimeMillis() > deadline ) {
 				// the answer would arrive after this call and offset every following one
 				this.destroy();
@@ -170,6 +191,8 @@ public class AppleMusicBridge {
 		if( answer == null ) {
 			throw new IOException("the helper closed its output");
 		}
+		this.answered = true;
+
 		return answer;
 	}
 }
