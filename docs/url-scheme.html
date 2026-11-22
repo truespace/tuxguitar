@@ -50,8 +50,19 @@
     an absolute path works as well.</td></tr>
   <tr><th>music</th><td><b>macOS only.</b> Switches Apple Music sync on and silences the score,
     since the recording is what the link is for. Give it the name of a track to load it from the
-    library; written on its own, it plays along with whatever Music already has loaded.</td></tr>
+    library; written on its own, it plays along with whatever Music already has loaded. Without it the link opens the score alone and switches the sync off, so an earlier link&rsquo;s recording does not play along.</td></tr>
+  <tr><th>offset</th><td><b>macOS only.</b> Milliseconds of the recording before the first
+    measure of the score &mdash; its count-in. May be negative, for a score that starts before
+    the recording does.</td></tr>
+  <tr><th>speed</th><td><b>macOS only.</b> How fast the recording runs against the tempo written
+    in the score, in percent: <code>101.2</code> for a recording 1.2&thinsp;% quicker than the
+    score. Between 50 and 200.</td></tr>
 </table>
+<p class="note">
+  TuxGuitar remembers <code>offset</code> and <code>speed</code> for the score the link opened,
+  so a page only has to carry them once: afterwards that score lines up by itself, opened from a
+  link or from the Tools menu.
+</p>
 <p class="note">
   A value containing spaces or non-latin characters has to be percent encoded
   (a space becomes <code>%20</code>). The builder below does that for you.
@@ -74,6 +85,8 @@
   <b>Play along with the track Music has loaded</b><code>tuxguitar://open?path=song.gp5&amp;music</code></a>
 <a class="link music" href="tuxguitar:///Users/me/songs/song.gp5?music=My%20Song">
   <b>A query on a plain path works too</b><code>tuxguitar:///Users/me/songs/song.gp5?music=My%20Song</code></a>
+<a class="link music" href="tuxguitar://open?path=song.gp5&amp;music=My%20Song&amp;offset=7200&amp;speed=101.2">
+  <b>Lined up: 7.2&thinsp;s of count-in, 1.2&thinsp;% quicker</b><code>tuxguitar://open?path=song.gp5&amp;music=My%20Song&amp;offset=7200&amp;speed=101.2</code></a>
 <p class="note">
   The name is matched against the library, exactly first and as a part of a title otherwise, so
   <code>music=Pretender</code> finds "Pretender" rather than "The Pretender". A track that is
@@ -89,6 +102,10 @@
   <input id="path" value="song.gp5" spellcheck="false" autocapitalize="off">
   <label for="music">Track in Music — leave empty for the score alone, <code>*</code> for the loaded track</label>
   <input id="music" value="" spellcheck="false" autocapitalize="off">
+  <label for="offset">Count-in of the recording, in milliseconds — leave empty to let TuxGuitar keep its own</label>
+  <input id="offset" value="" spellcheck="false" autocapitalize="off" inputmode="numeric">
+  <label for="speed">Speed of the recording against the score, in percent — leave empty for the same</label>
+  <input id="speed" value="" spellcheck="false" autocapitalize="off" inputmode="decimal">
   <output id="url"></output>
   <a class="open" id="go" href="#">Open this link</a>
 </div>
@@ -96,6 +113,8 @@
 <script>
   const path = document.getElementById("path");
   const music = document.getElementById("music");
+  const offset = document.getElementById("offset");
+  const speed = document.getElementById("speed");
   const url = document.getElementById("url");
   const go = document.getElementById("go");
 
@@ -107,12 +126,19 @@
     } else if (name.length > 0) {
       link += "&music=" + encodeURIComponent(name);
     }
+    for (const [key, field] of [["offset", offset], ["speed", speed]]) {
+      const value = field.value.trim();
+      if (value.length > 0 && !isNaN(Number(value))) {
+        link += "&" + key + "=" + encodeURIComponent(value);
+      }
+    }
     url.textContent = link;
     go.href = link;
   }
 
-  path.addEventListener("input", build);
-  music.addEventListener("input", build);
+  for (const field of [path, music, offset, speed]) {
+    field.addEventListener("input", build);
+  }
   build();
 </script>
 

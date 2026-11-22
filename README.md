@@ -46,7 +46,21 @@ On macOS a link can bring the recording along, which is what makes a page of son
 ```
 
 `music` switches Apple Music sync on and silences the score, since the recording is what the
-link is for; naming a track loads it from the library first.
+link is for; naming a track loads it from the library first. A link without `music` opens the score alone: it
+switches the sync off, so the recording an earlier link chose does not play along with it. The sync a
+link switches on belongs to the score it opened: playing another score switches it off, and
+TuxGuitar always starts with it off.
+
+A link can line the two up as well:
+
+```html
+<a href="tuxguitar://open?path=Pretender.gp5&music=Pretender&offset=7200&speed=101.2">Open lined up</a>
+```
+
+`offset` is how long the recording plays before the first measure, in milliseconds, and may be
+negative; `speed` is how fast it runs against the written tempo, in percent. TuxGuitar
+remembers both for that score, so a page only has to carry them once: from then on the score
+lines up by itself, opened from a link or from the Tools menu.
 
 [docs/url-scheme.html](docs/url-scheme.html) lists the forms of such a link and builds one from
 a path and a track name, with the escaping taken care of; open it in a browser.
@@ -67,6 +81,13 @@ how fast the recording runs compared to the tempo of the score. Rather than typi
 the caret on a measure, scrub the recording in Music to the moment that measure is heard, and
 press one of the two anchor buttons: the first takes the offset from it, the second the speed.
 The dialog shows the drift that remains, so they can be checked while the score plays.
+
+Both belong to the score rather than to TuxGuitar, since every song has its own count-in and
+its own tempo, so they are remembered per score file in
+`~/Library/Application Support/tuxguitar/config/apple-music-songs.properties` and come back the
+next time that score is opened. The dialog names the score they were lined up for, and can forget them again. A link
+that carries `offset` and `speed` writes them there too. A score that has never been saved has
+no file to be remembered by, and keeps the last numbers typed instead.
 
 While the recording plays, the instruments of the score are silenced, which is usually the
 point; the dialog has a switch for it.

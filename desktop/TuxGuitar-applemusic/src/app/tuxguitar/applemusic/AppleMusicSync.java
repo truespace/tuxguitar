@@ -34,6 +34,8 @@ public class AppleMusicSync implements TGEventListener {
 	private static final long SETTLE_AFTER_CORRECTION = 3000;
 	private static final int READINGS = 3;
 	private static final String PARAMETER_MUSIC = "music";
+	private static final String PARAMETER_OFFSET = "offset";
+	private static final String PARAMETER_SPEED = "speed";
 
 	private final TGContext context;
 	private final AppleMusicSettings settings;
@@ -46,6 +48,9 @@ public class AppleMusicSync implements TGEventListener {
 	private volatile long drift;
 	private long correctedAt;
 	private int savedVolume = -1;
+	// the score a "tuxguitar:" link with a recording opened: the sync it switched on is for that
+	// score only, and switches itself off when another one is played
+	private volatile TGSong linkedSong;
 
 	public AppleMusicSync(TGContext context, File helper) {
 		this.context = context;
@@ -76,6 +81,10 @@ public class AppleMusicSync implements TGEventListener {
 	}
 
 	public void connect() {
+		// the sync is kept in the configuration, but a session starts without it: left on, the
+		// recording of whatever link was last opened would play along with the next score
+		this.settings.setEnabled(false);
+		this.linkedSong = null;
 		MidiPlayer.getInstance(this.context).addListener(this);
 		TGEventManager.getInstance(this.context).addListener(TGSchemeUrl.EVENT_TYPE, this);
 	}
@@ -154,8 +163,16 @@ public class AppleMusicSync implements TGEventListener {
 	 * A "tuxguitar:" link may ask for the recording along with the score, and name the track it
 	 * means: tuxguitar://open?path=song.gp5&music=Pretender. Opened that way the score is
 	 * silenced, since the recording is what the link is for.
+	 *
+	 * A link without it asks for the score alone. The sync is kept in the configuration, so
+	 * without switching it off here the recording an earlier link chose would play along with
+	 * this score, and the score would stay silent.
+	 *
+	 * The link may line the two up as well: &offset=7200&speed=101.2.
 	 */
 	private void processSchemeUrl(String text) {
+		this.applyLinkSettings(text);
+
 		final String track;
 		try {
 			track = (text != null ? TGSchemeUrl.getParameter(text, PARAMETER_MUSIC) : null);
@@ -165,9 +182,17 @@ public class AppleMusicSync implements TGEventListener {
 			return;
 		}
 		if( track == null ) {
+			this.linkedSong = null;
+			if( this.settings.isEnabled() ) {
+				this.settings.setEnabled(false);
+				this.stop();
+				this.setStatus("opened without a recording - synchronisation off");
+			}
 			return;
 		}
 
+		// the event comes once the file is open, so the current song is the one the link opened
+		this.linkedSong = TGDocumentManager.getInstance(this.context).getSong();
 		this.settings.setEnabled(true);
 		this.settings.setMuteScore(true);
 		this.setStatus(track.length() > 0 ? ("loading " + track) : "playing along with the current track");
@@ -193,7 +218,57 @@ public class AppleMusicSync implements TGEventListener {
 		}
 	}
 
+	/**
+	 * Takes the offset and the speed a link carries: offset=7200 is "the recording plays for
+	 * 7.2 seconds before the first measure", speed=101.2 is "it runs at 101.2% of the written
+	 * tempo". Both are remembered for the score the link opened, so a page of songs that
+	 * carries them only has to teach TuxGuitar each song once; afterwards the score lines up on
+	 * its own, from the Tools menu as much as from a link.
+	 *
+	 * The event arrives once the file is open, so the score they are kept under is the right one.
+	 */
+	private void applyLinkSettings(String text) {
+		Double offset = this.getNumberParameter(text, PARAMETER_OFFSET);
+		if( offset != null ) {
+			this.settings.setOffset((int) Math.round(offset.doubleValue()));
+			this.setStatus(String.format("the link puts the score at %+d ms of the recording",
+				Integer.valueOf(this.settings.getOffset())));
+		}
+
+		Double speed = this.getNumberParameter(text, PARAMETER_SPEED);
+		if( speed != null ) {
+			this.settings.setStretch((int) Math.round(speed.doubleValue() * 10));
+			this.setStatus(String.format("the link runs the recording at %.1f%% of the score",
+				Double.valueOf(this.settings.getStretch() / 10.0)));
+		}
+	}
+
+	private Double getNumberParameter(String text, String name) {
+		try {
+			String value = (text != null ? TGSchemeUrl.getParameter(text, name) : null);
+			if( value != null && value.trim().length() > 0 ) {
+				return Double.valueOf(Double.parseDouble(value.trim()));
+			}
+		} catch (Throwable throwable) {
+			// a mistyped number should not keep the score from opening
+			this.setStatus(name + " of the link is not a number");
+		}
+		return null;
+	}
+
+	/** the sync was switched on or off by hand, so it no longer belongs to the score of a link */
+	public void releaseLink() {
+		this.linkedSong = null;
+	}
+
 	private synchronized void start() {
+		TGSong linked = this.linkedSong;
+		if( linked != null && linked != TGDocumentManager.getInstance(this.context).getSong() ) {
+			// another score than the one the link brought the recording for
+			this.linkedSong = null;
+			this.settings.setEnabled(false);
+			this.setStatus("a different score than the link opened - synchronisation off");
+		}
 		if(!this.settings.isEnabled() ) {
 			return;
 		}
